@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>通用权限管理系统</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <link href="../../plugin/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../plugin/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../../plugin/adminlte/AdminLTE.min.css" rel="stylesheet">
+    <link href="../../plugin/adminlte/skins/_all-skins.min.css" rel="stylesheet">
+
+    <link rel="icon" href="../../images/favicon.png" type="image/x-icon"/>
+    <link rel="shortcut icon" href="../../images/favicon.png" type="image/x-icon"/>
+
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div id="app" class="wrapper">
+
+    <header class="main-header">
+        <!-- Logo -->
+        <a href="javascript:void(0);" class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini">
+                UPMS
+            </span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg">
+                通用权限管理系统
+            </span>
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top">
+
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button"></a>
+
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="../../plugin/adminlte/user4-128x128.jpg" class="user-image" alt="User Image">
+                            <span class="hidden-xs">{{loginUserName}}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <!-- User image -->
+                            <li class="user-header">
+                                <img src="../../plugin/adminlte/user2-160x160.jpg" class="img-circle"
+                                     alt="User Image">
+
+                                <p>
+                                    你好，{{loginUserName}}
+                                    <small>注册时间：2017年10月11日</small>
+                                </p>
+                            </li>
+                            <!-- Menu Footer-->
+                            <li class="user-footer">
+                                <div class="pull-left">
+                                    <a href="#" class="btn btn-primary btn-flat">个人中心</a>
+                                </div>
+                                <div class="pull-right">
+                                    <a href="/logout" class="btn btn-danger btn-flat">退出系统</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- left menu -->
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar" style="height:100px;">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section id="app_left_menu" class="sidebar">
+            <!-- Sidebar user panel -->
+            <div class="user-panel">
+                <div class="pull-left image">
+                    <img src="../../plugin/adminlte/user2-160x160.jpg" class="img-circle"
+                         alt="User Image">
+                </div>
+                <div class="pull-left info">
+                    <p>{{loginUserName}}</p>
+                    <a href="#"><i class="fa fa-circle text-success"></i> 在线状态</a>
+                </div>
+            </div>
+            <!-- search form -->
+            <form action="#" method="get" class="sidebar-form">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search...">
+                    <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                </button>
+              </span>
+                </div>
+            </form>
+            <!-- /.search form -->
+
+            <!-- sidebar menu: : style can be found in sidebar.less -->
+
+
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="header">
+                    菜单列表
+                </li>
+
+                <li class="treeview" v-for="menu in menus">
+                    <a :href="menu.url" v-if="menu.parentId==0">
+                        <i :class="menu.icon"></i> <span>{{menu.name}}</span>
+                        <span class="pull-right-container">
+                            <span class="label label-primary pull-right">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li v-for="sub in menus" v-if="sub.parentId==menu.id">
+                            <a :href="sub.url">
+                                <i :class="sub.icon"></i>{{sub.name}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+    </aside>
+    <!-- /left menu -->
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+
+        <!-- Main content -->
+        <section class="content" style="background:#ECF0F5;">
+
+            <!-- 路径导航 -->
+            <ol class="breadcrumb" style="border:1px; background-color: #ffffff">
+                <li><a href="#">首页</a></li>
+                <li><a href="#" class="active">应用监控</a></li>
+            </ol>
+            <!-- /路径导航 -->
+
+            <iframe id="app_iframe" scrolling="yes" frameborder="0"
+                    style="width:100%;overflow:visible; background:#fff;" src="home.html"></iframe>
+        </section>
+
+    </div>
+    <!-- ./wrapper -->
+
+</div>
+
+</body>
+
+<script src="../../plugin/jquery/jquery.min.js"></script>
+<script src="../../plugin/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../../plugin/adminlte/adminlte.min.js"></script>
+<script src="../../plugin/vue/2.5.13/vue.min.js"></script>
+<script src="../../vue/common/common-application.js"></script>
+<script src="../../vue/sys/index.js"></script>
+
+
+<!-- link flush iframe -->
+<script type="text/javascript">
+    $(function () {
+        var contentHeight = document.body.clientHeight - 50 - 30;
+        $(".content").height(contentHeight + "px");
+        $("#app_iframe").height(contentHeight - 56);
+
+        /* 点击事件会在超链接跳转前发生 */
+        $("body").on("click", "#app_left_menu .treeview-menu a", function () {
+            var link = $(this).attr('href');
+            $('#app_iframe').attr('src', link);
+            var href = window.location.href;
+            window.location.href = href.substr(0, href.indexOf('#')) + '#' + link;
+            return false;
+        });
+    });
+</script>
+
+
+</html>

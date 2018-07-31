@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+【命名规范说明 】
+1. 文件名采用 "表名.xml" 的方式；
+2. 每个SQL上需要编写该条SQL的注释；
+3. SQL关键字采用全大写的方式；
+4. 如果允许，请尽量保持SQL的ID和对应的业务方法名保持一致；
+5. 查询SQL如果需要使用自动分页，则其SQL的ID必须使用ByPage结尾；
+6. 可以使用MyBatis流程控制语句来实现SQL的重用；
+6. 注意SQL排版；
+-->
+
+<mapper namespace="cn.com.njdhy.muscle.biceps.dao.SysMenuDao">
+
+    <resultMap id="SysMenuMap" type="SysMenu">
+        <result property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="parentName" column="parent_name"/>
+        <result property="name" column="name"/>
+        <result property="url" column="url"/>
+        <result property="type" column="type"/>
+        <result property="icon" column="icon"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="permission" column="permission"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+        <result property="deleteFlag" column="delete_flag"/>
+    </resultMap>
+
+    <!-- 配置表名 -->
+    <sql id="tableName">
+        sys_menu
+    </sql>
+
+    <!-- for insert columns -->
+    <sql id="columns">
+        id, parent_id, name, url, type, icon, order_num, permission, create_date, update_date, delete_flag
+    </sql>
+
+    <!-- for insert value -->
+    <sql id="values">
+        #{id}, #{parentId}, #{name}, #{url}, #{type}, #{icon},  #{orderNum}, #{permission}, GETDATE(), GETDATE(), 0
+    </sql>
+
+    <!-- for update set -->
+    <sql id="updates">
+        parent_id=#{parentId}, name=#{name}, url=#{url}, type=#{type}, icon=#{icon}, order_num=#{orderNum}, permission=#{permission},delete_flag=#{deleteFlag}, update_date=GETDATE()
+    </sql>
+
+    <!-- 查询加载表格 -->
+    <select id="queryList" resultMap="SysMenuMap" parameterType="map">
+        SELECT
+        id, parent_id, name, url, type, icon, order_num, create_date, update_date, delete_flag
+        FROM
+        sys_menu t
+        WHERE 1=1
+        AND t.delete_flag = 0
+        <if test="keyword!=null and keyword!=''">
+            AND t.name LIKE CONCAT('%',#{keyword},'%')
+            OR t.url LIKE CONCAT('%',#{keyword},'%')
+        </if>
+        <if test="sortName!=null and sorName!='' and sortOrder !=null and sortOrder!=''">
+            ORDER BY #{sortName} #{sortOrder}
+        </if>
+    </select>
+
+    <!-- 根据ID查询-->
+    <select id="queryById" resultMap="SysMenuMap" parameterType="String">
+        SELECT
+        m.id,m.name,m.url,m.type,m.icon,m.order_num,m.delete_flag,m.parent_id,(select m1.name from sys_menu m1 where m1.id=m.parent_id) as parent_name
+        FROM
+        sys_menu m
+        WHERE 1 = 1
+        AND m.id=#{id}
+    </select>
+
+    <!-- 批量删除-->
+    <delete id="deleteByIds" parameterType="java.util.List">
+        DELETE FROM
+        <include refid="tableName"/>
+        WHERE 1=1
+        AND id IN
+        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 新建  -->
+    <insert id="insert" parameterType="SysMenu" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_menu
+        (parent_id, name, url, type, icon, order_num, permission, create_date, update_date, delete_flag)
+        VALUES
+        (#{parentId}, #{name}, #{url}, #{type}, #{icon},  #{orderNum}, #{permission}, GETDATE(), GETDATE(), 0)
+    </insert>
+
+    <!-- 修改 -->
+    <update id="update" parameterType="SysMenu">
+        UPDATE
+        <include refid="tableName"/>
+        SET
+        <include refid="updates"/>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 首页加载菜单 -->
+    <select id="loadMenus" resultMap="SysMenuMap" parameterType="String">
+	SELECT  DISTINCT
+			m.id,
+			m.name,
+			m.icon,
+			m.parent_id,
+			m.url,
+			m.order_num
+		FROM
+			sys_menu m
+		WHERE
+			1 = 1
+		AND m.delete_flag = 0
+		AND m.id IN (
+			SELECT DISTINCT
+				rm.menu_id
+			FROM
+				sys_role r
+			LEFT JOIN sys_role_menu rm ON r.id = rm.role_id
+			WHERE
+				r.delete_flag = 0
+			AND r.id IN (
+				SELECT DISTINCT
+					ur.role_id
+				FROM
+					sys_user t
+				LEFT JOIN sys_user_role ur ON t.id = ur.user_id
+				WHERE
+					t.delete_flag = 0
+				AND t.user_name = #{userName}
+			)
+		)
+		order by m.order_num;
+
+    </select>
+
+    <!-- 查询除按鈕以外的菜單 -->
+    <select id="queryMenu" resultMap="SysMenuMap">
+        select
+        <include refid="columns"/>
+        from sys_menu m where m.type=0 or m.type=1 and m.delete_flag=0 order by m.order_num asc
+    </select>
+
+    <!-- 查询所有菜單 -->
+    <select id="queryAllMenu" resultMap="SysMenuMap">
+        select
+        <include refid="columns"/>
+        from sys_menu m where m.delete_flag=0 order by m.order_num asc
+    </select>
+
+    <!-- 根据用户名查询前端菜单 -->
+    <select id="queryMenuForHaiHang" resultMap="SysMenuMap" parameterType="java.util.Map">
+            select m.id,m.name,m.url,m.order_num,m.icon from sys_menu m where 1=1 and ( m.id=
+            (
+            SELECT
+                        m.id
+                    FROM
+                        sys_menu m
+                    WHERE
+                        1 = 1
+                    AND m.delete_flag = 0 and m.menu_type=1
+                    and m.name=#{position}
+                    AND m.id IN (
+                        SELECT DISTINCT
+                            rm.menu_id
+                        FROM
+                            sys_role r
+                        LEFT JOIN sys_role_menu rm ON r.id = rm.role_id
+                        WHERE
+                            r.delete_flag = 0
+                        AND r.id IN (
+                            SELECT DISTINCT
+                                ur.role_id
+                            FROM
+                                sys_user t
+                            LEFT JOIN sys_user_role ur ON t.id = ur.user_id
+                            WHERE
+                                t.delete_flag = 0
+                            AND t.user_name = #{userName}
+                        )
+                    )
+            ) or m.parent_id=
+            (
+                SELECT
+                        m.id
+                    FROM
+                        sys_menu m
+                    WHERE
+                        1 = 1
+                    AND m.delete_flag = 0 and m.menu_type=1
+                    and m.name=#{position}
+                    AND m.id IN (
+                        SELECT DISTINCT
+                            rm.menu_id
+                        FROM
+                            sys_role r
+                        LEFT JOIN sys_role_menu rm ON r.id = rm.role_id
+                        WHERE
+                            r.delete_flag = 0
+                        AND r.id IN (
+                            SELECT DISTINCT
+                                ur.role_id
+                            FROM
+                                sys_user t
+                            LEFT JOIN sys_user_role ur ON t.id = ur.user_id
+                            WHERE
+                                t.delete_flag = 0
+                            AND t.user_name = #{userName}
+                        )
+                    )
+            ))
+    </select>
+
+</mapper>
+

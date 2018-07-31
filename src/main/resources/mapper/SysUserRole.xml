@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 配置dao接口路径-->
+<mapper namespace="cn.com.njdhy.muscle.biceps.dao.SysUserRoleDao">
+
+    <!-- type配置model层实体类名-->
+    <resultMap id="SysUserRoleMap" type="SysUserRole">
+        <!-- 配置实体和数据库列的对应关系，property：实体属性名；column：数据库表列名；-->
+        <result property="userId" column="user_id"></result>
+        <result property="roleId" column="role_id"></result>
+    </resultMap>
+
+    <!-- 配置表名 -->
+    <sql id="tableName">
+        sys_user_role
+    </sql>
+
+    <!-- for insert columns -->
+    <sql id="columns">
+        user_id, role_id
+    </sql>
+
+    <!-- for insert value -->
+    <sql id="values">
+        #{userId}, #{roleId}
+    </sql>
+
+    <!-- for batchInsert value -->
+    <sql id="batchInsertValues">
+        #{item.userId}, #{item.roleId}
+    </sql>
+
+    <!-- for update set -->
+    <sql id="updates">
+        user_id=#{userId}, role_id=#{roleId}
+    </sql>
+
+    <!-- 根据ID查询-->
+    <select id="queryById" resultMap="SysUserRoleMap" parameterType="String">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="tableName"/>
+        WHERE 1 = 1
+        AND user_id=#{id}
+    </select>
+
+    <!-- 批量删除-->
+    <delete id="deleteByIds" parameterType="List">
+        DELETE FROM
+        <include refid="tableName"/>
+        WHERE 1=1
+        AND id IN
+        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 批量新建  -->
+    <insert id="batchInsert">
+        insert into
+        <include refid="tableName"/>
+        (<include refid="columns"/>)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (<include refid="batchInsertValues"/>)
+        </foreach>
+    </insert>
+
+    <!-- 修改 -->
+    <update id="update" parameterType="SysUserRole">
+        UPDATE
+        <include refid="tableName"/>
+        SET
+        <include refid="updates"/>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据条件查询 -->
+    <select id="queryList" resultMap="SysUserRoleMap" parameterType="map">
+        SELECT
+        t.id,
+        t.user_id,
+        u.user_name,
+        t.role_id,
+        r.name,
+        FROM
+        sys_user_role t
+        LEFT JOIN sys_user u ON u.id = t.user_id
+        LEFT JOIN sys_ROLE r ON r.id = t.role_id
+        WHERE 1=1
+    </select>
+
+</mapper>
+

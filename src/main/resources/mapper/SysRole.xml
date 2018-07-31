@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.com.njdhy.muscle.biceps.dao.SysRoleDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap id="SysRoleMap" type="SysRole">
+        <!-- 配置实体和数据库列的对应关系，property：实体属性名；column：数据库表列名；-->
+        <result property="id" column="id"></result>
+        <result property="name" column="name"></result>
+        <result property="nameCn" column="name_cn"></result>
+        <result property="status" column="status"></result>
+        <result property="deleteFlag" column="delete_flag"></result>
+        <result property="createDate" column="create_date"></result>
+        <result property="updateDate" column="update_date"></result>
+    </resultMap>
+
+    <!-- 配置表名 -->
+    <sql id="tableName">
+        sys_role
+    </sql>
+
+    <!-- for insert columns -->
+    <sql id="columns">
+        id, name, name_cn,status, create_date, update_date, delete_flag
+    </sql>
+
+    <!-- for insert value -->
+    <sql id="values">
+        #{id}, #{name}, #{nameCn}, #{status}, GETDATE(), GETDATE(), 0
+    </sql>
+
+    <!-- for update set -->
+    <sql id="updates">
+        name=#{name}, name_cn=#{nameCn}, status=#{status}, delete_flag=#{deleteFlag}, update_date=GETDATE()
+    </sql>
+
+    <!-- 根据用户名称查询该用户拥有的角色-->
+    <select id="loadRoles" resultMap="SysRoleMap" parameterType="map">
+        SELECT
+        DISTINCT(t.id),
+        t.name,
+        t.name_cn
+        FROM
+        sys_role t
+        LEFT JOIN sys_user_role ur ON t.id = ur.role_id
+        LEFT JOIN sys_user u ON ur.user_id = u.id
+        WHERE 1 = 1
+        AND t.delete_flag = 0
+        <if test="userName!='admin'"><!-- 超级管理员的特权处理-->
+            AND u.user_name = #{userName}
+        </if>
+    </select>
+
+    <!-- 根据用户名查询角色信息 -->
+    <select id="queryRolesByUserName" resultType="List" parameterType="map">
+        SELECT
+            r.name
+        FROM
+            sys_role r
+        LEFT JOIN sys_user_role ur ON ur.role_id = r.id
+        LEFT JOIN sys_user u ON u.id = ur.user_id
+        WHERE
+            1 = 1
+        AND u.user_name = #{userName}
+    </select>
+
+    <!-- 查询加载表格 -->
+    <select id="queryList" resultMap="SysRoleMap" parameterType="map">
+        SELECT
+        t.id,
+        t.name,
+        t.name_cn,
+        t.status,
+        t.create_date,
+        t.update_date,
+        t.delete_flag
+        FROM
+        sys_role t
+        WHERE 1=1
+        AND t.delete_flag = 0
+        <if test="keyword!=null and keyword!=''">
+            AND t.name LIKE CONCAT('%',#{keyword},'%')
+            OR t.name_cn LIKE CONCAT('%',#{keyword},'%')
+        </if>
+        <if test="sortName!=null and sorName!='' and sortOrder !=null and sortOrder!=''">
+            ORDER BY #{sortName} #{sortOrder}
+        </if>
+    </select>
+
+    <!-- 根据ID查询-->
+    <select id="queryById" resultMap="SysRoleMap" parameterType="String">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="tableName"/>
+        WHERE 1 = 1
+        AND id=#{id}
+    </select>
+
+    <!-- 批量删除-->
+    <delete id="deleteByIds" parameterType="java.util.List">
+        DELETE FROM
+        <include refid="tableName"/>
+        WHERE 1=1
+        AND id IN
+        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 新建  -->
+    <insert id="insert" parameterType="SysRole" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_role
+        (name, name_cn,status, create_date, update_date, delete_flag)
+        VALUES
+        (#{name}, #{nameCn}, #{status}, GETDATE(), GETDATE(), 0)
+    </insert>
+
+    <!-- 修改 -->
+    <update id="update" parameterType="SysRole">
+        UPDATE
+        <include refid="tableName"/>
+        SET
+        <include refid="updates"/>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据用户名查询角色 -->
+    <select id="queryRoleByUserName" resultMap="SysRoleMap" parameterType="String">
+        select r.id,r.name from sys_role r
+        left join sys_user_role ur on ur.role_id=r.id
+        left join sys_user u on u.id=ur.user_id
+        where u.user_name=#{userName}
+    </select>
+
+
+</mapper>
+

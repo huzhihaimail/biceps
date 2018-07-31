@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>系统登录</title>
+    <link href="../../plugin/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../plugin/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../../plugin/adminlte/AdminLTE.min.css" rel="stylesheet">
+    <link href="../../plugin/adminlte/skins/_all-skins.min.css" rel="stylesheet">
+
+    <link rel="icon" href="../../images/favicon.png" type="image/x-icon"/>
+    <link rel="shortcut icon" href="../../images/favicon.png" type="image/x-icon"/>
+</head>
+<body>
+<div id="app">
+    用户名<input type="text" v-model="userName">
+    密码<input type="text" v-model="pwd">
+    <span>{{message}}</span>
+    <button @click="login">登录</button>
+</div>
+</body>
+<script src="../../plugin/jquery/jquery.min.js"></script>
+<script src="../../plugin/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../../plugin/adminlte/adminlte.min.js"></script>
+<script src="../../plugin/vue/2.5.13/vue.min.js"></script>
+<script src="../../vue/common/common-application.js"></script>
+<script src="../../vue/sys/login.js"></script>
+</html>

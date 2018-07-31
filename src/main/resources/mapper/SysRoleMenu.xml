@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 配置dao接口路径-->
+<mapper namespace="cn.com.njdhy.muscle.biceps.dao.SysRoleMenuDao">
+
+    <!-- type配置model层实体类名-->
+    <resultMap id="SysRoleMenuMap" type="SysRoleMenu">
+        <!-- 配置实体和数据库列的对应关系，property：实体属性名；column：数据库表列名；-->
+        <result property="roleId" column="role_id"></result>
+        <result property="menuId" column="menu_id"></result>
+    </resultMap>
+
+    <!-- 配置表名 -->
+    <sql id="tableName">
+        sys_role_menu
+    </sql>
+
+    <!-- for insert columns -->
+    <sql id="columns">
+        role_id,menu_id
+    </sql>
+
+    <!-- for insert value -->
+    <sql id="values">
+         #{roleId},#{menuId}
+    </sql>
+
+    <!-- for batchInsert value -->
+    <sql id="batchInsertValues">
+        #{item.roleId},#{item.menuId}
+    </sql>
+
+    <!-- for update set -->
+    <sql id="updates">
+        role_id=#{roleId},menu_id=#{menuId}
+    </sql>
+
+    <!-- 根据ID查询-->
+    <select id="queryById" resultMap="SysRoleMenuMap" parameterType="String">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="tableName"/>
+        WHERE 1 = 1
+        AND id=#{id}
+    </select>
+
+    <!-- 根据角色id查询菜单-->
+    <select id="queryMenuByRoleId" resultMap="SysRoleMenuMap" parameterType="SysRoleMenu">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="tableName"/>
+        WHERE 1 = 1
+        AND role_id=#{roleId}
+    </select>
+
+    <!-- 批量删除-->
+    <delete id="deleteByIds" parameterType="List">
+        DELETE FROM
+        <include refid="tableName"/>
+        WHERE 1=1
+        AND role_id IN
+        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 批量新建  -->
+    <insert id="batchInsert">
+        insert into
+        <include refid="tableName"/>
+        (<include refid="columns"/>)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (<include refid="batchInsertValues"/>)
+        </foreach>
+    </insert>
+
+    <!-- 修改 -->
+    <update id="update" parameterType="SysRoleMenu">
+        UPDATE
+        <include refid="tableName"/>
+        SET
+        <include refid="updates"/>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据条件查询 -->
+    <select id="queryList" resultMap="SysRoleMenuMap" parameterType="map">
+        SELECT
+        t.id,
+        t.user_id,
+        u.user_name,
+        t.role_id,
+        r.name,
+        FROM
+        sys_user_role t
+        LEFT JOIN sys_user u ON u.id = t.user_id
+        LEFT JOIN sys_ROLE r ON r.id = t.role_id
+        WHERE 1=1
+    </select>
+
+</mapper>
+

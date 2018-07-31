@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 【命名规范说明 】 1. 文件名采用 "表名.xml" 的方式； 2. 每个SQL上需要编写该条SQL的注释； 3. SQL关键字采用全大写的方式； 4. 如果允许，请尽量保持SQL的ID和对应的业务方法名保持一致； 5. 查询SQL如果需要使用自动分页，则其SQL的ID必须使用ByPage结尾； 
+	6. 可以使用MyBatis流程控制语句来实现SQL的重用； 6. 注意SQL排版； -->
+
+<mapper namespace="cn.com.njdhy.muscle.biceps.dao.SysQuartzJobDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap id="QuartzJobMap" type="SysQuartzJob">
+        <result property="id" column="id"/>
+        <result property="jobId" column="job_id"/>
+        <result property="jobName" column="job_name"/>
+        <result property="jobGroup" column="job_group"/>
+        <result property="jobStatus" column="job_status"/>
+        <result property="cronExpression" column="cron_expression"/>
+        <result property="description" column="description"/>
+        <result property="beanClass" column="bean_class"/>
+        <result property="isConcurrent" column="is_concurrent"/>
+        <result property="springId" column="spring_id"/>
+        <result property="methodName" column="method_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="queryList" resultMap="QuartzJobMap" parameterType="map">
+        SELECT
+        t.id,
+        t.job_id,
+        t.job_name,
+        t.job_group,
+        t.job_status,
+        t.cron_expression,
+        t.description,
+        t.bean_class,
+        t.is_concurrent,
+        t.spring_id,
+        t.method_name,
+        t.create_time,
+        t.update_time
+        FROM
+        sys_quartz_job t
+        where 1=1
+        order by id desc
+
+    </select>
+
+</mapper>
+
