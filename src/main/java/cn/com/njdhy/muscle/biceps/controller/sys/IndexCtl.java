@@ -7,6 +7,7 @@ import cn.com.njdhy.muscle.biceps.model.SysMenu;
 import cn.com.njdhy.muscle.biceps.model.SysUser;
 import cn.com.njdhy.muscle.biceps.service.sys.SysMenuService;
 import cn.com.njdhy.muscle.biceps.util.ShiroUtil;
+import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -35,25 +38,24 @@ public class IndexCtl {
     @Autowired
     private SysMenuService sysMenuService;
 
-
     /**
      * 登陆系统
      *
-     * @param sysUser 用户对象
+     * @param userName 用户名称
+     * @param password 用户密码
      * @return 登陆结果
      */
-    @RequestMapping(value = "/login")
-    public Result login(SysUser sysUser) {
-
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public Result login(@RequestParam(required = true) String userName, @RequestParam(required = true) String password) {
         try {
-            // todo 参数校验
-
+            // 参数校验
+            if (StringUtils.isEmpty(userName.trim()) || StringUtils.isEmpty(password.trim())) {
+                return Result.error(IndexErrorCode.SYS_INDEX_CTL_LOGIN_ERROR_CODE, IndexErrorCode.SYS_INDEX_CTL_LOGIN_ERROR_MESSAGE);
+            }
             // 生成token
-            UsernamePasswordToken token = new UsernamePasswordToken(sysUser.getUserName(), sysUser.getPassword());
-
+            UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
             // 到realm中进行身份认证和鉴权
             SecurityUtils.getSubject().login(token);
-
         } catch (UnknownAccountException e) {
             return Result.error(IndexErrorCode.SYS_INDEX_CTL_USERNAME_EMPTY_CODE, IndexErrorCode.SYS_INDEX_CTL_USERNAME_EMPTY_MESSAGE);
         } catch (IncorrectCredentialsException e) {
@@ -69,24 +71,6 @@ public class IndexCtl {
         return Result.success();
     }
 
-    /**
-     * 函数功能描述：退出系统
-     */
-    @RequestMapping("/logout")
-    public Result logOut() {
-
-        // 获取当前用户
-        Subject currentUser = SecurityUtils.getSubject();
-
-        // 身份校验通过
-        if (currentUser.isAuthenticated()) {
-
-            // session 会销毁，在SessionListener监听session销毁，清理权限缓存
-            currentUser.logout();
-        }
-
-        return Result.success();
-    }
 
     /**
      * 登陆用户名称
@@ -122,21 +106,15 @@ public class IndexCtl {
     public Result loadMenus() {
 
         try {
-
             String loginUserName = ShiroUtil.getLoginUserName();
-
             if (StringUtils.isEmpty(loginUserName)) {
                 return Result.error(IndexErrorCode.SYS_INDEX_CTL_GET_USERNAME_FROM_SHIRO_ERROR_CODE, IndexErrorCode.SYS_INDEX_CTL_GET_USERNAME_FROM_SHIRO_ERROR_MESSAGE);
             }
-
             List<SysMenu> result = sysMenuService.loadMenus(loginUserName);
-
             if (CollectionUtils.isEmpty(result)) {
                 result = new ArrayList<>();
             }
-
             return Result.success().put("page", result);
-
         } catch (RuntimeException e) {
             return Result.error(IndexErrorCode.SYS_INDEX_CTL_GET_MENUS_ERROR_CODE, IndexErrorCode.SYS_INDEX_CTL_GET_MENUS_ERROR_MESSAGE);
         } catch (Exception e) {

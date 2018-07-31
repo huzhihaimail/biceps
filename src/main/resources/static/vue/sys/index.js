@@ -1,5 +1,5 @@
 var vm = new Vue({
-    el: '#app',
+    el: '#' + VUE_EL,
     data: {
         menus: {} // 用户授权菜单
         , loginUserName: null //登陆用户名称
@@ -18,7 +18,7 @@ var vm = new Vue({
                 }
             });
         },
-        // 加载用户授权菜单
+        // 加载用户名称
         getLoginUser: function () {
             $.getJSON(APP_NAME + "/loginUserName", function (r) {
                 if (r.code == 0) {

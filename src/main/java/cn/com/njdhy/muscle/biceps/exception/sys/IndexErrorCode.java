@@ -61,4 +61,10 @@ public interface IndexErrorCode {
     String SYS_INDEX_CTL_GET_MENUS_ROOT_ERROR_CODE = SYS_INDEX + "6";
     String SYS_INDEX_CTL_GET_MENUS_ROOT_ERROR_MESSAGE = "根据权限查询系统菜单，查询Exception异常";
 
+    /**
+     * 根据权限查询系统菜单，查询Exception异常
+     */
+    String SYS_INDEX_CTL_LOGIN_ERROR_CODE = SYS_INDEX + "6";
+    String SYS_INDEX_CTL_LOGIN_ERROR_MESSAGE = "登录系统，查询参数异常，用户名或者密码为空";
+
 }

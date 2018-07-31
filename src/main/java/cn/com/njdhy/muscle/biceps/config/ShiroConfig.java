@@ -38,13 +38,15 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setUnauthorizedUrl("/html/sys/unauthorized.html");
         // 拦截器链
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
+        filterChainDefinitionMap.put("/html/sys/login.html", "anon");
+        filterChainDefinitionMap.put("/html/sys/*.html", "authc");
         filterChainDefinitionMap.put("/login", "anon");
         filterChainDefinitionMap.put("/swagger*", "anon");
         filterChainDefinitionMap.put("/sys/*/*", "authc");
-        filterChainDefinitionMap.put("/*", "authc");
-
         // 配置退出过滤器,其中的具体的退出代码Shiro已经替我们实现了
         filterChainDefinitionMap.put("/logout", "logout");
+        filterChainDefinitionMap.put("/*", "authc");
+
 
         //配置某个url需要某个权限码
         //filterChainDefinitionMap.put("/hello", "perms[how_are_you]");
