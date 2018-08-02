@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 配置dao接口路径-->
+<mapper namespace="cn.com.njdhy.muscle.biceps.dao.SysUserDao">
+
+    <!-- type配置model层实体类名-->
+    <resultMap id="SysUserMap" type="SysUser">
+        <!-- 配置实体和数据库列的对应关系，property：实体属性名；column：数据库表列名；-->
+        <result property="id" column="id"></result>
+        <result property="userName" column="user_name"></result>
+        <result property="nickName" column="nick_name"></result>
+        <result property="password" column="password"></result>
+        <result property="salt" column="salt"></result>
+        <result property="email" column="email"></result>
+        <result property="mobile" column="mobile"></result>
+        <result property="status" column="status"></result>
+        <result property="deleteFlag" column="delete_flag"></result>
+        <result property="createDate" column="create_date"></result>
+        <result property="updateDate" column="update_date"></result>
+    </resultMap>
+
+    <!-- 配置表名 -->
+    <sql id="tableName">
+        sys_user
+    </sql>
+
+    <!-- for insert columns -->
+    <sql id="columns">
+        id, user_name, nick_name, mobile, password, salt, status, email, create_date, update_date, delete_flag
+    </sql>
+
+    <!-- for insert value -->
+    <sql id="values">
+        #{id}, #{userName}, #{nickName}, #{mobile}, #{password}, #{salt}, 1, #{email}, NOW(), NOW(), 0
+    </sql>
+
+    <!-- for update set -->
+    <sql id="updates">
+        user_name=#{userName}, nick_name=#{nickName}, mobile=#{mobile}, `password`=#{password}, salt=#{salt}, status=#{status}, email=#{email}, delete_flag=#{deleteFlag}, update_date=NOW()
+    </sql>
+
+    <!-- 根据名称查询 -->
+    <select id="queryByName" resultMap="SysUserMap" parameterType="String">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="tableName"/>
+        t
+        WHERE 1=1
+        AND t.user_name=#{userName}
+
+    </select>
+
+    <!-- 根据ID查询-->
+    <select id="queryById" resultMap="SysUserMap" parameterType="String">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="tableName"/>
+        WHERE 1 = 1
+        AND id=#{id}
+    </select>
+
+    <!-- 批量删除-->
+    <delete id="deleteByIds" parameterType="java.util.List">
+        DELETE FROM
+        <include refid="tableName"/>
+        WHERE 1=1
+        AND id IN
+        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 新建  useGeneratedKeys="true" 用于返回新增后的id值-->
+    <insert id="insert" parameterType="SysUser" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO
+        <include refid="tableName"/>
+        (<include refid="columns"/>)
+        VALUES
+        (<include refid="values"/>)
+    </insert>
+
+    <!-- 修改 -->
+    <update id="update" parameterType="SysUser">
+        UPDATE
+        <include refid="tableName"/>
+        SET
+        <include refid="updates"/>
+        WHERE 1=1
+        AND id = #{id}
+    </update>
+
+    <!-- 根据条件查询 -->
+    <select id="queryList" resultMap="SysUserMap" parameterType="map">
+
+        SELECT
+        <include refid="columns"/>
+        FROM
+        (
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="tableName"/>
+        WHERE 1=1
+        <if test="keyword!=null and keyword!=''">
+            AND user_name LIKE CONCAT('%',#{keyword},'%')
+            OR nick_name LIKE CONCAT('%',#{keyword},'%')
+            OR mobile LIKE CONCAT('%',#{keyword},'%')
+            OR email LIKE CONCAT('%',#{keyword},'%')
+        </if>
+        ORDER BY
+        <if test="sortName!=null and sorName!='' and sortOrder !=null and sortOrder!=''">
+            #{sortName} #{sortOrder},
+        </if>
+        id desc
+        ) t
+    </select>
+
+
+</mapper>
+
