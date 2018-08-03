@@ -5,6 +5,8 @@ import cn.com.njdhy.muscle.biceps.shiro.UserRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.SimpleCookie;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -56,6 +58,27 @@ public class ShiroConfig {
         return shiroFilterFactoryBean;
     }
 
+    @Bean
+    public DefaultWebSessionManager sessionManager() {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        // 设置session的过期时间
+        sessionManager.setGlobalSessionTimeout(108000);
+        // 删除无效会话
+        sessionManager.setDeleteInvalidSessions(true);
+        sessionManager.setSessionIdCookieEnabled(true);
+        sessionManager.setSessionIdCookie(simpleCookie());
+        return sessionManager;
+    }
+
+
+    @Bean
+    public SimpleCookie simpleCookie() {
+        SimpleCookie simpleCookie = new SimpleCookie("sid");
+        simpleCookie.setHttpOnly(true);
+        simpleCookie.setMaxAge(100);
+        return simpleCookie;
+    }
+
     /**
      * 制定安全管理器
      *
@@ -64,6 +87,7 @@ public class ShiroConfig {
     @Bean
     public DefaultWebSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        securityManager.setSessionManager(sessionManager());
         // 设置realm（支持多个Realm）
         securityManager.setRealm(userRealm());
 
