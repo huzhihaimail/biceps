@@ -1,6 +1,7 @@
 
 package cn.com.njdhy.muscle.biceps.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Date;
  *
  * @author 胡志海
  */
-public class BaseModel {
+public class BaseModel implements Serializable {
 
     /**
      * 数据行ID

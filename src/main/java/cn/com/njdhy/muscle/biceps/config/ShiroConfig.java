@@ -3,13 +3,17 @@ package cn.com.njdhy.muscle.biceps.config;
 
 import cn.com.njdhy.muscle.biceps.shiro.UserRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.codec.Base64;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -38,8 +42,14 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSuccessUrl("/html/sys/index.html");
         // 未授权界面;
         shiroFilterFactoryBean.setUnauthorizedUrl("/html/sys/unauthorized.html");
+
+        // 配置过滤器
+        Map<String, Filter> filters = new LinkedHashMap();
+        /*filters.put("authc", formAuthenticationFilter());*/
+        shiroFilterFactoryBean.setFilters(filters);
+
         // 拦截器链
-        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
+        Map<String, String> filterChainDefinitionMap = new LinkedHashMap();
         filterChainDefinitionMap.put("/html/sys/login.html", "anon");
         filterChainDefinitionMap.put("/html/sys/*.html", "authc");
         filterChainDefinitionMap.put("/login", "anon");
@@ -47,7 +57,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/sys/*/*", "authc");
         // 配置退出过滤器,其中的具体的退出代码Shiro已经替我们实现了
         filterChainDefinitionMap.put("/logout", "logout");
-        filterChainDefinitionMap.put("/*", "authc");
+        filterChainDefinitionMap.put("/*", "anon");
 
 
         //配置某个url需要某个权限码
@@ -65,19 +75,73 @@ public class ShiroConfig {
         sessionManager.setGlobalSessionTimeout(108000);
         // 删除无效会话
         sessionManager.setDeleteInvalidSessions(true);
+        // 是否禁用cookie
         sessionManager.setSessionIdCookieEnabled(true);
-        sessionManager.setSessionIdCookie(simpleCookie());
+        sessionManager.setSessionIdCookie(sessionCookie());
         return sessionManager;
     }
 
-
+    /**
+     * 会话cookie模板
+     *
+     * @return 会话cookie模板
+     */
     @Bean
-    public SimpleCookie simpleCookie() {
-        SimpleCookie simpleCookie = new SimpleCookie("sid");
+    public SimpleCookie sessionCookie() {
+        // 配置cookie的名称
+        SimpleCookie simpleCookie = new SimpleCookie("simpleCookie");
+        // 开启保护
         simpleCookie.setHttpOnly(true);
-        simpleCookie.setMaxAge(100);
+        // -1表示浏览器关闭时失效此Cookie
+        simpleCookie.setMaxAge(-1);
         return simpleCookie;
     }
+
+
+    /**
+     * 会话cookie的rememberMe功能
+     *
+     * @return 会话cookie 记住我功能
+     */
+    @Bean
+    public SimpleCookie rememberMeCookie() {
+        //这个参数是cookie的名称，对应前端的checkbox的name = rememberMe
+        SimpleCookie rememberMeCookie = new SimpleCookie("rememberMe");
+        // 开启保护
+        rememberMeCookie.setHttpOnly(true);
+        // 记住我的cookie保存30天
+        rememberMeCookie.setMaxAge(60 * 60 * 30);
+        return rememberMeCookie;
+    }
+
+    /**
+     * 记住我RememberMe管理器
+     *
+     * @return 记住我管理器
+     */
+    @Bean
+    public CookieRememberMeManager rememberMeManager() {
+        CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
+        cookieRememberMeManager.setCookie(rememberMeCookie());
+        cookieRememberMeManager.setCipherKey(Base64.decode("2AvVhdsgUs0FSA3SDFAdag=="));
+        return cookieRememberMeManager;
+    }
+
+    /**
+     * form表单过滤器
+     *
+     * @return 登录表单对象
+     */
+    @Bean
+    public FormAuthenticationFilter formAuthenticationFilter() {
+        FormAuthenticationFilter formAuthenticationFilter = new FormAuthenticationFilter();
+        formAuthenticationFilter.setUsernameParam("userName");
+        formAuthenticationFilter.setPasswordParam("pwd");
+        formAuthenticationFilter.setRememberMeParam("rememberMe");
+        return formAuthenticationFilter;
+
+    }
+
 
     /**
      * 制定安全管理器
@@ -87,10 +151,12 @@ public class ShiroConfig {
     @Bean
     public DefaultWebSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setSessionManager(sessionManager());
         // 设置realm（支持多个Realm）
         securityManager.setRealm(userRealm());
-
+        // 会话管理器
+        securityManager.setSessionManager(sessionManager());
+        // 记住我RememberMe功能
+        securityManager.setRememberMeManager(rememberMeManager());
         return securityManager;
     }
 

@@ -23,36 +23,34 @@
         <p class="login-box-msg">欢迎使用通用权限管理系统V1.0</p>
         <p class="login-box-msg text-danger">{{message}}</p>
 
-        <form>
 
-            <div class="form-group has-feedback">
-                <input type="text" class="form-control" placeholder="用户名、邮箱、手机号都可以登录 " v-model="userName">
-                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+        <div class="form-group has-feedback">
+            <input type="text" class="form-control" placeholder="用户名、邮箱、手机号都可以登录 " v-model="userName">
+            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+            <input type="password" class="form-control" placeholder="请输入您的密码" v-model="pwd">
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-4 center-block">
+                <input type="checkbox" v-model="rememberMe" name="rememberMe">记住密码
             </div>
-            <div class="form-group has-feedback">
-                <input type="password" class="form-control" placeholder="请输入您的密码" v-model="pwd">
-                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            <div class="col-xs-4">
+                <a type="reset" class="btn btn-danger btn-block btn-flat" @click="reset">
+                    <i class="fa fa-times fa-lg" aria-hidden="true"></i> &nbsp;&nbsp;清空
+                </a>
             </div>
 
-            <div class="row">
-                <div class="col-xs-4 center-block">
-                    <input type="checkbox">记住密码
-                </div>
-                <div class="col-xs-4">
-                    <a type="reset" class="btn btn-danger btn-block btn-flat">
-                        <i class="fa fa-times fa-lg" aria-hidden="true"></i> &nbsp;&nbsp;清空
-                    </a>
-                </div>
-
-                <div class="col-xs-4">
-                    <a class="btn btn-primary btn-block btn-flat" @click="login">
-                        <i class="fa fa-hand-pointer-o fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;登录
-                    </a>
-                </div>
+            <div class="col-xs-4">
+                <a class="btn btn-primary btn-block btn-flat" @click="login">
+                    <i class="fa fa-hand-pointer-o fa-lg" aria-hidden="true"></i>&nbsp;&nbsp;登录
+                </a>
             </div>
-            <div class="row" style="padding-bottom: 20px">
-            </div>
-        </form>
+        </div>
+        <div class="row" style="padding-bottom: 20px">
+        </div>
 
         <!-- <div class="social-auth-links text-center">
              <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> 微信登陆</a>

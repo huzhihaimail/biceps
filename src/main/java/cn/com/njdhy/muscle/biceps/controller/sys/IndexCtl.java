@@ -46,14 +46,16 @@ public class IndexCtl {
      * @return 登陆结果
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public Result login(@RequestParam(required = true) String userName, @RequestParam(required = true) String password) {
+    public Result login(@RequestParam(required = true) String userName, @RequestParam(required = true) String password, @RequestParam(required = true) boolean rememberMe) {
         try {
             // 参数校验
             if (StringUtils.isEmpty(userName.trim()) || StringUtils.isEmpty(password.trim())) {
                 return Result.error(IndexErrorCode.SYS_INDEX_CTL_LOGIN_ERROR_CODE, IndexErrorCode.SYS_INDEX_CTL_LOGIN_ERROR_MESSAGE);
             }
             // 生成token
-            UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
+            UsernamePasswordToken token = new UsernamePasswordToken(userName, password, rememberMe);
+            // 设置记住我
+            token.setRememberMe(true);
             // 到realm中进行身份认证和鉴权
             SecurityUtils.getSubject().login(token);
         } catch (UnknownAccountException e) {
