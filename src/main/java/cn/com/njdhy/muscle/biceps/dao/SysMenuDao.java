@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author 胡志海
  */
-@Repository
 public interface SysMenuDao extends BaseDao<SysMenu> {
 
     /**

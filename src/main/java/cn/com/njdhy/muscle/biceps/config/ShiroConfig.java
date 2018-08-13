@@ -45,7 +45,6 @@ public class ShiroConfig {
 
         // 配置过滤器
         Map<String, Filter> filters = new LinkedHashMap();
-        /*filters.put("authc", formAuthenticationFilter());*/
         shiroFilterFactoryBean.setFilters(filters);
 
         // 拦截器链

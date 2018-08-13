@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
  *
  * @author 胡志海
  */
-@Repository
 public interface HrInterviewDao extends BaseDao<HrInterview> {
 
 

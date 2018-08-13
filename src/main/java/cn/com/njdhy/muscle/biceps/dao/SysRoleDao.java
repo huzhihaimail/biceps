@@ -13,7 +13,6 @@ import java.util.Map;
  *
  * @author 胡志海
  */
-@Repository
 public interface SysRoleDao extends BaseDao<SysRole> {
 
     /**

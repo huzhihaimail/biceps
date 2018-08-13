@@ -44,6 +44,9 @@ dependencies {
     compile "com.github.pagehelper:pagehelper:${mybatisPagehelperVersion}"
     compile "com.alibaba:druid-spring-boot-starter:${druidVersion}"
 
+    // 监控
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+
     // shiro
     compile("org.apache.shiro:shiro-core:${shiroVersion}")
     compile("org.apache.shiro:shiro-spring:${shiroVersion}")

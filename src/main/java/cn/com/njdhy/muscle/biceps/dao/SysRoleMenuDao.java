@@ -12,7 +12,6 @@ import java.util.List;
  *
  * @author 胡志海
  */
-@Repository
 public interface SysRoleMenuDao extends BaseDao<SysRoleMenu> {
 
     /**
