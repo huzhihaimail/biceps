@@ -294,7 +294,7 @@ var vm = new Vue({
 $(function () {
 
     // 创建BootStrapTable
-    bsTable.createBootStrapTable(vm.columns, APP_NAME + "/sys/" + vm.moduleName + "/list?rnd=" + Math.random(), vm.queryOption)
+    bsTable.createBootStrapTable(vm.columns, APP_NAME + vm.moduleName + "/list?rnd=" + Math.random(), vm.queryOption)
 });
 
 
