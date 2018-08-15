@@ -51,6 +51,14 @@ public interface BaseDao<T> {
     List<T> queryList(Map<String, Object> map);
 
     /**
+     * 函数功能描述：查询所有object表记录
+     *
+     * @param map 示例实体对象
+     * @return 结果集合
+     */
+    List<T> queryByParams(Map<String, Object> map);
+
+    /**
      * 函数功能描述：根据ID查询单个记录
      *
      * @param id 示例id

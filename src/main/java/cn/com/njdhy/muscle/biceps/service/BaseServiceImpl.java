@@ -80,6 +80,17 @@ public class BaseServiceImpl<DAO extends BaseDao<T>, T> implements BaseService<T
         return new PageInfo<T>(this.dao.queryList(queryParams));
     }
 
+    /**
+     * 根据条件查询列表结果（不分页）
+     *
+     * @param map 示例参数对象
+     * @return 查询结果列表
+     */
+    @Override
+    public List<T> queryByParams(Map<String, Object> map) {
+        return this.dao.queryByParams(map);
+    }
+
 
     /**
      * 函数功能描述：根据ID查询单个记录
