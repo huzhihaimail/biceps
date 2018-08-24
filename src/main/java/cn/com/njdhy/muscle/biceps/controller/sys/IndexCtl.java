@@ -4,19 +4,18 @@ package cn.com.njdhy.muscle.biceps.controller.sys;
 import cn.com.njdhy.muscle.biceps.controller.Result;
 import cn.com.njdhy.muscle.biceps.exception.sys.IndexErrorCode;
 import cn.com.njdhy.muscle.biceps.model.SysMenu;
-import cn.com.njdhy.muscle.biceps.model.SysUser;
 import cn.com.njdhy.muscle.biceps.service.sys.SysMenuService;
 import cn.com.njdhy.muscle.biceps.util.ShiroUtil;
-import org.apache.ibatis.annotations.Param;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
-import org.apache.shiro.subject.Subject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +27,8 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/")
+@Slf4j
 public class IndexCtl {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(IndexCtl.class);
 
     @Autowired
     private SysMenuService sysMenuService;
