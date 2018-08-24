@@ -1,6 +1,9 @@
 
 package cn.com.njdhy.muscle.biceps.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 /**
@@ -8,6 +11,8 @@ import java.util.List;
  *
  * @author 胡志海
  */
+@Getter
+@Setter
 public class SysUser extends BaseModel {
 
     /**
@@ -60,17 +65,8 @@ public class SysUser extends BaseModel {
      */
     private List<String> userRoles;
 
-    public String getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(String roleId) {
-        this.roleId = roleId;
-    }
-
     /**
      * 角色id
-
      */
     private String roleId;
 
@@ -79,91 +75,4 @@ public class SysUser extends BaseModel {
      */
     private String isRememberMe;
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
-    }
-
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
-
-    public String getUserVerifyCode() {
-        return userVerifyCode;
-    }
-
-    public void setUserVerifyCode(String userVerifyCode) {
-        this.userVerifyCode = userVerifyCode;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public List<String> getUserRoles() {
-        return userRoles;
-    }
-
-    public void setUserRoles(List<String> userRoles) {
-        this.userRoles = userRoles;
-    }
-
-    public String getIsRememberMe() {
-        return isRememberMe;
-    }
-
-    public void setIsRememberMe(String isRememberMe) {
-        this.isRememberMe = isRememberMe;
-    }
 }

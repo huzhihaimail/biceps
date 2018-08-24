@@ -158,7 +158,7 @@ public class UserCtl {
             // 获取登用户名
             String loginUserName = ShiroUtil.getLoginUserName();
 
-            if(StringUtils.isEmpty(loginUserName)){
+            if (StringUtils.isEmpty(loginUserName)) {
                 return Result.error(UserErrorCode.SYS_USER_LOAD_ROLES_APP_ERROR_CODE, UserErrorCode.SYS_USER_LOAD_ROLES_APP_ERROR_MESSAGE);
             }
 

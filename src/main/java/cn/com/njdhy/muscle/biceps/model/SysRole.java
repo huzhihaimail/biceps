@@ -1,6 +1,9 @@
 
 package cn.com.njdhy.muscle.biceps.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 /**
@@ -8,6 +11,8 @@ import java.util.List;
  *
  * @author 胡志海
  */
+@Getter
+@Setter
 public class SysRole extends BaseModel {
 
     /**
@@ -30,44 +35,4 @@ public class SysRole extends BaseModel {
      */
     private List<String> menuIdList;
 
-    public List<String> getMenuIdList() {
-        return menuIdList;
-    }
-
-    public void setMenuIdList(List<String> menuIdList) {
-        this.menuIdList = menuIdList;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNameCn() {
-        return nameCn;
-    }
-
-    public void setNameCn(String nameCn) {
-        this.nameCn = nameCn;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "SysRole{" +
-                "name='" + name + '\'' +
-                ", nameCn='" + nameCn + '\'' +
-                ", status='" + status + '\'' +
-                '}';
-    }
 }

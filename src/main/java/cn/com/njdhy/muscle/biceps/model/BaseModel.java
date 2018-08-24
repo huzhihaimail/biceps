@@ -1,6 +1,10 @@
 
 package cn.com.njdhy.muscle.biceps.model;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -9,6 +13,8 @@ import java.util.Date;
  *
  * @author 胡志海
  */
+@Getter
+@Setter
 public class BaseModel implements Serializable {
 
     /**
@@ -31,45 +37,4 @@ public class BaseModel implements Serializable {
      */
     private Date updateDate;
 
-    public String getDeleteFlag() {
-        return deleteFlag;
-    }
-
-    public void setDeleteFlag(String deleteFlag) {
-        this.deleteFlag = deleteFlag;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
-
-    @Override
-    public String toString() {
-        return "BaseModel{" +
-                "id='" + id + '\'' +
-                ", deleteFlag='" + deleteFlag + '\'' +
-                ", createDate=" + createDate +
-                ", updateDate=" + updateDate +
-                '}';
-    }
 }

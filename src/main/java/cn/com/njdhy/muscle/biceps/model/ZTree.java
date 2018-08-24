@@ -2,6 +2,10 @@
 
 package cn.com.njdhy.muscle.biceps.model;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 /**
@@ -11,6 +15,8 @@ import java.io.Serializable;
  * @author 胡贤
  * @version V0.0.1-SNAPSHOT
  */
+@Getter
+@Setter
 public class ZTree implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,45 +45,5 @@ public class ZTree implements Serializable {
      * 是否选中
      */
     private boolean checked;
-
-    public void setMenuId(String menuId) {
-        this.menuId = menuId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
-    public String getMenuId() {
-        return menuId;
-    }
-
-    public String getParentId() {
-        return parentId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isOpen() {
-        return open;
-    }
-
-    public void setOpen(boolean open) {
-        this.open = open;
-    }
-
-    public boolean isChecked() {
-        return checked;
-    }
-
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-    }
 
 }
