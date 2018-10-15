@@ -15,60 +15,51 @@ var showColumns = [
         }
     }
     , {
-        field: "userName",
-        title: "用户名称",
+        field: "jobName",
+        title: "任务名称",
+        width: "20%",
+        sortable: true,
+        sortName: "jobName" // sortName的值，需配置和数据库保持一致
+    }
+    , {
+        field: "jobGroup",
+        title: "任务分组",
         width: "10%",
-        sortable: true,
-        sortName: "user_name" // sortName的值，需配置和数据库保持一致
     }
     , {
-        field: "nickName",
-        title: "昵称",
-        width: "10%",
-        sortable: true,
-        sortName: "nickName"
-    }
-    , {
-        field: "mobile",
-        title: "手机号",
-        width: "20%",
-        sortable: true,
-        sortName: "mobile"
-    }
-    , {
-        field: "email",
-        title: "邮箱",
-        width: "15%",
-        sortable: true,
-        sortName: "email"
-    }
-    , {
-        field: "createDate",
-        title: "创建时间",
-        width: "20%",
+        field: "jobStatus",
+        title: "状态",
+        width: "7%",
         formatter: function (value, row, index) {
-            return new moment(value).format('YYYY-MM-DD HH:mm:ss');
+            if (value == '0') {
+                return "<span class='label label-danger'>停用</span>";
+            } else {
+                return "<span class='label label-success'>启用</span>";
+            }
         }
     }
     , {
-        field: "updateDate",
-        title: "最近修改时间",
-        width: "20%",
-        formatter: function (value, row, index) {
-            return new moment(value).format('YYYY-MM-DD HH:mm:ss');
-        }
+        field: "cronExpression",
+        title: "cron表达式",
+        width: "10%"
     }
-    /*, {
-        field: "operate",
-        title: "操作",
+    , {
+        field: "description",
+        title: "描述",
+        width: "20%",
+    }
+    , {
+        field: "springId",
+        title: "类名",
         width: "15%",
-        formatter: function () {
-            return '<a class="btn btn-success btn-sm" @click="save"><i class="fa fa-floppy-o"></i></a>\n' +
-                '<a class="btn btn-warning btn-sm" @click="update"><i class="fa fa-pencil-square-o"></i></a>\n' +
-                '<a class="btn btn-danger btn-sm" @click="del"><i class="fa fa-trash"></i></a>';
-        }
-    }*/
+    }
+    , {
+        field: "methodName",
+        title: "方法名",
+        width: "15%",
+    }
 ];
+
 
 // 通用表格对象
 var bsTable = new BootStrapTable();
@@ -93,10 +84,10 @@ var vm = new Vue({
         }
         , model: {} //实体对象(用于新建、修改页面)
         , roles: [] // 加载角色列表对象
-        , userRoles: [] // 用户选择的角色
 
         // 定义模块名称
-        , moduleName: "/sys/user"
+        , moduleName: "quartzJob"
+
     }
     // 定义方法
     , methods: {
@@ -109,90 +100,20 @@ var vm = new Vue({
         // 点击“新增”按钮
         , save: function (event) {
             // 1. 隐藏表格，显示添加页面
-            vm.showPwd = true;
             vm.show = false;
             vm.errorMessage = null;
 
             // 2. 设置标题
             vm.title = PAGE_INSERT_TITLE;
             // 3. 清空表单数据
-            vm.model = {};
+            vm.model = {
+                menuIdList: new Array()
+            };
 
-            // 4. 加载角色列表
-            vm.loadRoles();
         }
 
         // 点击“确定”按钮
         , commit: function (el) {
-
-            // 判断用户
-            if (!vm.model.userName || vm.model.userName.trim() == "") {
-                vm.errorMessage = "请输入用户名。";
-                return;
-            }
-
-            if (vm.model.userName.trim().length <= 0 || vm.model.userName.trim().length > 10) {
-                vm.errorMessage = "用户名长度不能超过10个字符。";
-                return;
-            }
-
-            // 判断昵称
-            if (!vm.model.nickName || vm.model.nickName.trim() == "") {
-                vm.errorMessage = "请输入用户昵称";
-                return;
-            }
-
-            if (vm.model.nickName.trim().length <= 0 || vm.model.nickName.trim().length > 10) {
-                vm.errorMessage = "长度不能超过10个字符。";
-                return;
-            }
-
-            // 判断密码
-            if (!vm.model.password || vm.model.password.trim() == "") {
-                vm.errorMessage = "请输入密码";
-                return;
-            }
-
-            if (vm.model.password.trim().length < 6 || vm.model.password.trim().length > 16) {
-                vm.errorMessage = "密码长度不能小于6位大于16位";
-                return;
-            }
-
-            //确认密码
-            if (vm.model.newPassword.trim() != vm.model.password.trim()) {
-                vm.errorMessage = "两次密码必须保持一致";
-                return;
-            }
-
-            //电子邮箱
-            if (!vm.model.email || vm.model.email.trim() == "") {
-                vm.errorMessage = "请输入邮箱";
-                return;
-            } else {
-                // 定义校验规则
-                var regEmail = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/;
-                var flag = regEmail.test(vm.model.email.trim());
-                // 规则校验：不符合规则则给出提示
-                if (!flag) {
-                    vm.errorMessage = "请输入正确的邮箱";
-                    return;
-                }
-            }
-
-            //手机号码
-            if (!vm.model.mobile || vm.model.mobile.trim() == "") {
-                vm.errorMessage = "请输入手机号码";
-                return;
-            }else{
-                // 定义校验规则
-                var regPhone = /^1[3|4|5|6|7|8|9]\d{9}$/;
-                var flag = regPhone.test(vm.model.mobile.trim());
-                // 规则校验：不符合规则则给出提示
-                if (!flag) {
-                    vm.errorMessage = "请正确填写手机号码";
-                    return;
-                }
-            }
 
             // 执行新增操作
             if (vm.model.id == null) {
@@ -207,13 +128,10 @@ var vm = new Vue({
         // 执行保存操作
         , doSave: function () {
 
-            // 获取到的用户配置的角色列表添加到后台参数
-            vm.model.userRoles = vm.userRoles;
-
-            // 2. 入库
+            // 1. 入库
             $.ajax({
                 type: "POST",
-                url: APP_NAME + vm.moduleName + "/insert",
+                url: APP_NAME + "/sys/" + vm.moduleName + "/insert",
                 contentType: "application/json",
                 data: JSON.stringify(vm.model),
                 success: function (r) {
@@ -228,6 +146,9 @@ var vm = new Vue({
                     }
                 }
             });
+
+            // 清除查询条件
+            vm.queryOption.keyword = "";
         }
 
         // 显示修改页面
@@ -246,13 +167,11 @@ var vm = new Vue({
                 return;
             }
 
-            $.get(APP_NAME + vm.moduleName + "/" + ids[0], function (r) {
+            $.get(APP_NAME + "/sys/" + vm.moduleName + "/" + ids[0], function (r) {
                 vm.show = false;
                 vm.title = PAGE_UPDATE_TITLE;
                 vm.model = r.model;
             });
-            // 加载角色列表
-            vm.loadRoles();
 
         }
 
@@ -262,7 +181,7 @@ var vm = new Vue({
             // 执行修改
             $.ajax({
                 type: "POST",
-                url: APP_NAME + vm.moduleName + "/update",
+                url: APP_NAME + "/sys/" + vm.moduleName + "/update",
                 contentType: "application/json",
                 data: JSON.stringify(vm.model),
                 success: function (r) {
@@ -294,7 +213,7 @@ var vm = new Vue({
             confirm(PAGE_ARE_YOU_SURE_DEL, function () {
                 $.ajax({
                     type: "POST",
-                    url: APP_NAME + vm.moduleName + "/delete",
+                    url: APP_NAME + "/sys/" + vm.moduleName + "/delete",
                     contentType: "application/json",
                     data: JSON.stringify(ids),
                     success: function (r) {
@@ -314,22 +233,19 @@ var vm = new Vue({
 
         // 重新加载(ok)
         , reload: function () {
+
             // 展示查询列表
             vm.show = true;
+
             // 查询条件
             var queryOpt = {
                 'keyword': vm.vueQueryParam.keyword == null ? "" : vm.vueQueryParam.keyword.trim(),
             };
-            vm.queryOption = queryOpt;
-            // 刷新表格数据
-            bsTable.createBootStrapTable(showColumns, APP_NAME + vm.moduleName + "/list?rnd=" + Math.random(), vm.queryOption);
-        }
 
-        // 加载角色列表
-        , loadRoles: function () {
-            $.get(APP_NAME + vm.moduleName + "/loadRoles", function (r) {
-                vm.roles = r.page;
-            });
+            vm.queryOption = queryOpt;
+
+            // 刷新表格数据
+            bsTable.createBootStrapTable(showColumns, APP_NAME + "/sys/" + vm.moduleName + "/list?rnd=" + Math.random(), vm.queryOption);
         }
 
     }
@@ -341,7 +257,7 @@ var vm = new Vue({
 $(function () {
 
     // 创建BootStrapTable
-    bsTable.createBootStrapTable(vm.columns, APP_NAME + vm.moduleName + "/list?rnd=" + Math.random(), vm.queryOption)
+    bsTable.createBootStrapTable(vm.columns, APP_NAME + "/sys/" + vm.moduleName + "/list?rnd=" + Math.random(), vm.queryOption)
 });
 
 

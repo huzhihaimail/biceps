@@ -11,4 +11,10 @@ import cn.com.njdhy.muscle.biceps.service.BaseService;
  */
 public interface SysQuartzJobService extends BaseService<SysQuartzJob> {
 
+    /**
+     * 新增定时任务
+     * @param sysQuartzJob
+     */
+    void saveQuartzJob(SysQuartzJob sysQuartzJob);
+
 }
