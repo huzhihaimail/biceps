@@ -97,10 +97,10 @@ public class QuartzJobCtl {
             if (EmptyUtils.isEmpty(sysQuartzJob.getJobName())){
                 return Result.error("任务名不能为空");
             }
-
             // 执行入库操作
             sysQuartzJobService.saveQuartzJob(sysQuartzJob);
         } catch (ApplicationException e) {
+            LOGGER.error(e.getMessage());
             return Result.error(QuartzJobErrorCode.SYS_QUARTZJOB_SAVE_APP_ERROR_CODE, QuartzJobErrorCode.SYS_QUARTZJOB_SAVE_APP_ERROR_MESSAGE);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
@@ -128,9 +128,11 @@ public class QuartzJobCtl {
             // 执行修改
             sysQuartzJobService.update(sysQuartzJob);
         } catch (RuntimeException e) {
-            return Result.error(QuartzJobErrorCode.SYS_QUARTZJOB_QUERY_APP_ERROR_CODE, QuartzJobErrorCode.SYS_QUARTZJOB_QUERY_APP_ERROR_MESSAGE);
+            LOGGER.error(e.getMessage());
+            return Result.error(QuartzJobErrorCode.SYS_QUARTZJOB_UPDATE_APP_ERROR_CODE, QuartzJobErrorCode.SYS_QUARTZJOB_UPDATE_APP_ERROR_MESSAGE);
         } catch (Exception e) {
-            return Result.error(QuartzJobErrorCode.SYS_QUARTZJOB_QUERY_ERROR_CODE, QuartzJobErrorCode.SYS_QUARTZJOB_QUERY_ERROR_MESSAGE);
+            LOGGER.error(e.getMessage());
+            return Result.error(QuartzJobErrorCode.SYS_QUARTZJOB_UPDATE_ERROR_CODE, QuartzJobErrorCode.SYS_QUARTZJOB_UPDATE_ERROR_MESSAGE);
         }
 
         return Result.success();

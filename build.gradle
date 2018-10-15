@@ -36,6 +36,7 @@ ext {
     shiroVersion = "1.3.2"
     swaggerVersion = "2.6.1"
     lombokVersion = "1.16.18"
+    quartzVersion = '2.2.1'
 }
 
 
@@ -56,6 +57,8 @@ dependencies {
     compile "io.springfox:springfox-swagger-ui:${swaggerVersion}"
     // Model层省略getter&setter
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    // quartz
+    compile "org.quartz-scheduler:quartz:${quartzVersion}"
     // 监控
     compile "org.springframework.boot:spring-boot-starter-actuator"
     // mysql
@@ -64,4 +67,5 @@ dependencies {
     runtime "org.springframework.boot:spring-boot-devtools"
     // 单元测试
     testCompile "org.springframework.boot:spring-boot-starter-test"
+
 }
