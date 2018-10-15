@@ -231,6 +231,80 @@ var vm = new Vue({
             });
         }
 
+        // 定时器启用按钮
+        ,
+        changeStart: function (event) {
+
+            // 获取选择记录ID
+            var ids = bsTable.getMultiRowIds();
+
+            // 校验只能选择一行
+            if (ids.length != 1) {
+                alert(PAGE_SELECT_ONE);
+                return;
+            }
+
+            confirm(PAGE_START_JOB, function () {
+                $.ajax({
+                    type: "POST",
+                    url: APP_NAME + "/sys/" + vm.moduleName + "/changeJobStart",
+                    contentType: "application/json",
+                    data: JSON.stringify(ids),
+                    success: function (r) {
+                        if (r.code == 0) {
+                            alert(PAGE_OPERATOR_SUCCESS, function (index) {
+                                vm.reload();
+                            });
+                        } else if (r.code) {
+                            alert(r.msg);
+                        } else {
+                            alert(r.msg);
+                        }
+                    }
+                });
+            });
+        }
+
+        // 定时器停止按钮
+        , changeStop: function (event) {
+
+            // 获取选择记录ID
+            var ids = bsTable.getMultiRowIds();
+
+            // 校验未选择任何一行
+            if (ids == null || ids.length <= 0) {
+                alert(PAGE_SELECT_ONE);
+                return;
+            }
+
+            // 校验只能选择一行
+            if (ids.length != 1) {
+                alert(PAGE_SELECT_ONE);
+                return;
+            }
+
+            confirm(PAGE_STOP_JOB, function () {
+                $.ajax({
+                    type: "POST",
+                    url: APP_NAME + "/sys/" + vm.moduleName + "/changeJobStop",
+                    contentType: "application/json",
+                    data: JSON.stringify(ids),
+                    success: function (r) {
+                        if (r.code == 0) {
+                            alert(PAGE_OPERATOR_SUCCESS, function (index) {
+                                vm.reload();
+                            });
+                        } else if (r.code) {
+                            alert(r.msg);
+                        } else {
+                            alert(r.msg);
+                        }
+                    }
+                });
+            });
+        }
+
+
         // 重新加载(ok)
         , reload: function () {
 

@@ -123,5 +123,9 @@
         AND id = #{id}
     </update>
 
+    <select id="queryAllList" resultMap="QuartzJobMap">
+        select * from sys_quartz_job
+    </select>
+
 </mapper>
 

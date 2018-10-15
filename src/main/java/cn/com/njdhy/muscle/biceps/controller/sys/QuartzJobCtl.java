@@ -162,4 +162,41 @@ public class QuartzJobCtl {
         return Result.success();
     }
 
+    /**
+     * 启动任务
+     *
+     * @param ids
+     * @return
+     */
+    @RequestMapping("/changeJobStart")
+    public Result changeStart(@RequestBody List<String> ids) {
+
+        try {
+            sysQuartzJobService.changeJobStart(ids.get(0));
+        } catch (ApplicationException e) {
+            return Result.error(e.getCode(), e.getMsg());
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+        return Result.success();
+    }
+
+    /**
+     * 停止任务
+     *
+     * @param ids
+     * @return
+     */
+    @RequestMapping("/changeJobStop")
+    public Result changeStop(@RequestBody List<String> ids) {
+
+        try {
+            sysQuartzJobService.changeJobStop(ids.get(0));
+        } catch (ApplicationException e) {
+            return Result.error(e.getCode(), e.getMsg());
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+        return Result.success();
+    }
 }

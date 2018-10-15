@@ -17,4 +17,12 @@ public interface SysQuartzJobService extends BaseService<SysQuartzJob> {
      */
     void saveQuartzJob(SysQuartzJob sysQuartzJob);
 
+    void changeJobStart(String id);
+
+    void changeJobStop(String id);
+
+    void addJob(SysQuartzJob job) throws Exception;
+
+    void deleteJob(SysQuartzJob sysQuartzJob) throws Exception;
+
 }

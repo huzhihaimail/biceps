@@ -16,3 +16,5 @@ const PAGE_UPDATE_TITLE = "修改";
 const PAGE_OPERATOR_SUCCESS = "操作成功！";
 const PAGE_SELECT_ONE = "请选择一条记录";
 const PAGE_ARE_YOU_SURE_DEL = "确定要删除选中的记录？";
+const PAGE_START_JOB = "确定要启动该任务？";
+const PAGE_STOP_JOB = "确定要停止该任务？";
