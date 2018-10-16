@@ -115,6 +115,8 @@ var vm = new Vue({
         // 点击“确定”按钮
         , commit: function (el) {
 
+
+
             // 执行新增操作
             if (vm.model.id == null) {
                 vm.doSave();
