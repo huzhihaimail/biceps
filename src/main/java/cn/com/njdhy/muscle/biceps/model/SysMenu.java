@@ -1,7 +1,6 @@
 
 package cn.com.njdhy.muscle.biceps.model;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +9,8 @@ import lombok.Setter;
  *
  * @author 胡志海
  */
-@Data
+@Getter
+@Setter
 public class SysMenu extends BaseModel {
 
     /**
