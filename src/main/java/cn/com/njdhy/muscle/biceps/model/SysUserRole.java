@@ -40,11 +40,4 @@ public class SysUserRole extends BaseModel {
         this.roleId = roleId;
     }
 
-    @Override
-    public String toString() {
-        return "SysUserRole{" +
-                "userId='" + userId + '\'' +
-                ", roleId='" + roleId + '\'' +
-                '}';
-    }
 }
