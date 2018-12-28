@@ -71,7 +71,7 @@ public class ShiroConfig {
     public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         // 设置session的过期时间
-        sessionManager.setGlobalSessionTimeout(108000);
+        sessionManager.setGlobalSessionTimeout(600000);
         // 删除无效会话
         sessionManager.setDeleteInvalidSessions(true);
         // 是否禁用cookie

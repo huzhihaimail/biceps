@@ -23,7 +23,7 @@ var showColumns = [
     }
     , {
         field: "nameCn",
-        title: "角色名称",
+        title: "角色中文名称",
         width: "10%",
     }
     // , {
@@ -54,7 +54,7 @@ var showColumns = [
             return new moment(value).format('YYYY-MM-DD HH:mm:ss');
         }
     }
-    /*, {
+    /*, {menu/queryAllMenuInsert
         field: "operate",
         title: "操作",
         width: "15%",
@@ -73,7 +73,8 @@ var bsTable = new BootStrapTable();
 
 var setting = {
     view: {
-        selectedMulti: false
+        selectedMulti: false,
+        showIcon: true
     },
     check: {
         enable: true
@@ -115,6 +116,8 @@ var vm = new Vue({
 
         // 定义模块名称
         , moduleName: "role"
+        // ztree的JSON树
+        , menuJSON: {}
 
     }
     // 定义方法
@@ -138,8 +141,8 @@ var vm = new Vue({
                 menuIdList: new Array()
             };
 
-            //5.加载树控件
-            vm.loadTreeMenu('add');
+            //4.加载树控件
+            vm.loadTree('menuTree', 'add');
 
         }
 
@@ -150,7 +153,7 @@ var vm = new Vue({
             if (vm.model.name.trim() == null || vm.model.name.trim() == "") {
                 vm.errorMessage = "请输入角色名";
                 return;
-            }else{
+            } else {
                 //TODO去重
             }
             // 角色中文名
@@ -233,7 +236,7 @@ var vm = new Vue({
             });
 
             //5.加载树控件
-            vm.loadTreeMenu('update');
+            vm.loadTree('menuTree', 'update');
         }
 
         // 执行修改操作
@@ -317,44 +320,55 @@ var vm = new Vue({
             bsTable.createBootStrapTable(showColumns, APP_NAME + "/sys/" + vm.moduleName + "/list?rnd=" + Math.random(), vm.queryOption);
         }
 
-        // 加载角色列表
-        , loadRoles: function () {
-            $.get(APP_NAME + "/sys/" + vm.moduleName + "/loadRoles", function (r) {
-                vm.roles = r.page;
-            });
-        }
-        , loadTreeMenu: function (type) {
-            function getMenuJson(url, data) {
-                var zNodes;
-                var role = {id: data};
-                $.ajax({
-                    url: url,
-                    dataType: 'JSON',
-                    type: 'POST',
-                    data: role,
-                    async: false,
-                    success: function (data, status) {
-                        var nodes = JSON.stringify(data.model);
-                        zNodes = eval(nodes);
-                    }
-                });
-                return zNodes;
-            }
+        // 获取ztree的JSON数据
+        , loadTree: function (id, type) {
 
             if (type == 'add') {
-                var data = null;
-                ztree = $.fn.zTree.init($("#menuTree"), setting, getMenuJson(APP_NAME + "/sys/menu/queryAllMenuInsert", data));
-                //展开所有节点
+                // 加载menuJson
+                vm.getMenuJson();
+
+                ztree = $.fn.zTree.init($("#" + id), setting, vm.menuJSON);
                 ztree.expandAll(true);
             } else if (type == 'update') {
+
                 var ids = bsTable.getMultiRowIds();
-                var data = ids[0];
-                /*ztree = $.fn.zTree.init($("#menuTree"), setting,getMenuJson(APP_NAME + "/sys/menu/queryAllMenuUpdate",data) );*/
-                ztree = $.fn.zTree.init($("#menuTree"), setting, getMenuJson(APP_NAME + "/sys/menu/queryAllMenuUpdate", data));
-                //展开所有节点
+                var selectedId = ids[0];
+                // 加载menuJson
+                vm.getMenuJsonById(selectedId);
+                ztree = $.fn.zTree.init($("#" + id), setting, vm.menuJSON);
                 ztree.expandAll(true);
             }
 
+        }
+
+        // 加载角色列表
+        , getMenuJson: function () {
+            $.ajax({
+                url: APP_NAME + "/sys/menu/queryAllMenus",
+                dataType: 'JSON',
+                type: 'POST',
+                async: false,
+                success: function (data, status) {
+                    console.log(data);
+                    var nodes = JSON.stringify(data);
+                    vm.menuJSON = eval(nodes);
+                    console.log(vm.menuJSON);
+                }
+            });
+        }
+        , getMenuJsonById: function (id) {
+            $.ajax({
+                url: APP_NAME + "/sys/roleMenu/" + id,
+                dataType: 'JSON',
+                type: 'POST',
+                async: false,
+                success: function (data, status) {
+                    console.log(data.model);
+                    var nodes = JSON.stringify(data.model);
+                    vm.menuJSON = eval(nodes);
+                    console.log(vm.menuJSON);
+                }
+            });
         }
 
     }

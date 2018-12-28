@@ -33,7 +33,7 @@
 
     <!-- for update set -->
     <sql id="updates">
-        user_id=#{userId}, role_id=#{roleId}
+        role_id=#{roleId}
     </sql>
 
     <!-- 根据ID查询-->
@@ -69,12 +69,12 @@
     </insert>
 
     <!-- 修改 -->
-    <update id="update" parameterType="SysUserRole">
+    <update id="update" parameterType="SysUserRole" >
         UPDATE
         <include refid="tableName"/>
         SET
         <include refid="updates"/>
-        WHERE id = #{id}
+        WHERE user_id=#{userId}
     </update>
 
     <!-- 根据条件查询 -->

@@ -50,7 +50,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUser> imp
 
         for (String roleId : roles) {
             SysUserRole sysUserRole = new SysUserRole();
-            sysUserRole.setUserId(userId);
+            sysUserRole.setUserId(sysUser.getId());
             sysUserRole.setRoleId(roleId);
             sysUserRolesLst.add(sysUserRole);
         }

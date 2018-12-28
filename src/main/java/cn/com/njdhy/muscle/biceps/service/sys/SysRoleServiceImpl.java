@@ -8,6 +8,7 @@ import cn.com.njdhy.muscle.biceps.model.SysRoleMenu;
 import cn.com.njdhy.muscle.biceps.service.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +46,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRole> imp
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void insertRoleInfo(SysRole role) {
 
         try {

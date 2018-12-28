@@ -50,5 +50,6 @@ public interface SysMenuService extends BaseService<SysMenu> {
      * @return 该用户所具有的菜单权限
      */
     List<String> queryPermissionByUserName(String loginName);
+    List<SysMenu> queryZtreeListByUserId(Integer id);
 
 }

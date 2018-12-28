@@ -9,6 +9,10 @@
         <!-- 配置实体和数据库列的对应关系，property：实体属性名；column：数据库表列名；-->
         <result property="roleId" column="role_id"></result>
         <result property="menuId" column="menu_id"></result>
+
+        <result property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="name" column="name"/>
     </resultMap>
 
     <!-- 配置表名 -->
@@ -16,6 +20,12 @@
         sys_role_menu
     </sql>
 
+    <sql id="tableName2">
+        sys_menu
+    </sql>
+    <sql id="tableName3">
+        sys_role
+    </sql>
     <!-- for insert columns -->
     <sql id="columns">
         role_id,menu_id
@@ -47,17 +57,23 @@
     </select>
 
     <!-- 根据角色id查询菜单-->
-    <select id="queryMenuByRoleId" resultMap="SysRoleMenuMap" parameterType="SysRoleMenu">
+    <select id="queryMenuByRoleId" resultMap="SysRoleMenuMap" parameterType="String">
         SELECT
-        <include refid="columns"/>
+        rm.menu_id,m.*
         FROM
-        <include refid="tableName"/>
+        sys_role r
+        LEFT JOIN
+        sys_role_menu rm
+        ON r.id = rm.role_id
+        LEFT JOIN
+        sys_menu m
+        ON m.id= rm.menu_id
         WHERE 1 = 1
-        AND role_id=#{roleId}
+        AND r.id=#{roleId}
     </select>
 
     <!-- 批量删除-->
-    <delete id="deleteByIds" parameterType="List">
+    <delete id="deleteByIds" parameterType="java.util.List">
         DELETE FROM
         <include refid="tableName"/>
         WHERE 1=1
@@ -65,6 +81,13 @@
         <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
             #{id}
         </foreach>
+    </delete>
+
+    <delete id="deleteById" parameterType="String">
+        DELETE FROM
+        <include refid="tableName"/>
+        WHERE 1=1
+        AND role_id = #{roleId}
     </delete>
 
     <!-- 批量新建  -->

@@ -16,7 +16,7 @@ public class SysMenu extends BaseModel {
     /**
      * 父级菜单ID
      */
-    private String parentId;
+    private Integer parentId;
 
     /**
      * 菜单名称
@@ -47,10 +47,5 @@ public class SysMenu extends BaseModel {
      * 菜单排序
      */
     private String orderNum;
-
-    /**
-     * 权限标志
-     */
-    private String permission;
 
 }

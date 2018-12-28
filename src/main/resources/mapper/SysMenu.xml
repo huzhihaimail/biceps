@@ -23,7 +23,6 @@
         <result property="type" column="type"/>
         <result property="icon" column="icon"/>
         <result property="orderNum" column="order_num"/>
-        <result property="permission" column="permission"/>
         <result property="createDate" column="create_date"/>
         <result property="updateDate" column="update_date"/>
         <result property="deleteFlag" column="delete_flag"/>
@@ -36,17 +35,17 @@
 
     <!-- for insert columns -->
     <sql id="columns">
-        id, parent_id, name, url, type, icon, order_num, permission, create_date, update_date, delete_flag
+        id, parent_id, name, url, type, icon, order_num, create_date, update_date, delete_flag
     </sql>
 
     <!-- for insert value -->
     <sql id="values">
-        #{id}, #{parentId}, #{name}, #{url}, #{type}, #{icon},  #{orderNum}, #{permission}, GETDATE(), GETDATE(), 0
+        #{id}, #{parentId}, #{name}, #{url}, #{type}, #{icon}, #{orderNum}, now(), now(), 0
     </sql>
 
     <!-- for update set -->
     <sql id="updates">
-        parent_id=#{parentId}, name=#{name}, url=#{url}, type=#{type}, icon=#{icon}, order_num=#{orderNum}, permission=#{permission},delete_flag=#{deleteFlag}, update_date=GETDATE()
+        parent_id=#{parentId}, name=#{name}, url=#{url}, type=#{type}, icon=#{icon}, order_num=#{orderNum},delete_flag=#{deleteFlag}, update_date=now()
     </sql>
 
     <!-- 查询加载表格 -->
@@ -86,13 +85,16 @@
             #{id}
         </foreach>
     </delete>
+    <delete id="delete">
+
+    </delete>
 
     <!-- 新建  -->
     <insert id="insert" parameterType="SysMenu" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sys_menu
-        (parent_id, name, url, type, icon, order_num, permission, create_date, update_date, delete_flag)
+        (parent_id, name, url, type, icon, order_num, create_date, update_date, delete_flag)
         VALUES
-        (#{parentId}, #{name}, #{url}, #{type}, #{icon},  #{orderNum}, #{permission}, GETDATE(), GETDATE(), 0)
+        (#{parentId}, #{name}, #{url}, #{type}, #{icon}, #{orderNum}, now(), now(), 0)
     </insert>
 
     <!-- 修改 -->
@@ -217,6 +219,35 @@
                     )
             ))
     </select>
+    <!-- 根据用户id查询该用户所配置的菜单 -->
+    <select id="queryZtreeListByUserId" resultMap="SysMenuMap" parameterType="int">
+		select
+			m.id,
+			m. name,
+			(
+				select
+					name
+				from
+					sys_menu
+				where
+					id = m.parent_id
+			) as parentname,
+			m.parent_id,
+			m.url,
+			m.type,
+			m.icon,
+			m.order_num
+		from sys_menu m
+		left join sys_role_menu rm
+		on m.id = rm.menu_id
+		left join sys_user_role ur
+		on rm.role_id = ur.role_id
+		where 1 = 1
+    	and ur.user_id = #{userId}
+		order by m.id desc
+
+
+	</select>
 
 </mapper>
 

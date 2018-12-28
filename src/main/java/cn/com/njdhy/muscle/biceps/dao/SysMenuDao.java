@@ -51,4 +51,6 @@ public interface SysMenuDao extends BaseDao<SysMenu> {
      */
     List<String> queryPermissionByUserName(String loginName);
 
+    List<SysMenu> queryZtreeListByUserId(Integer id);
+
 }

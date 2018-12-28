@@ -84,7 +84,8 @@ var bsTable = new BootStrapTable();
 
 var setting = {
     view: {
-        selectedMulti: false
+        selectedMulti: false,
+        showIcon:true
     },
     data: {
         simpleData: {
@@ -116,6 +117,8 @@ var vm = new Vue({
             parentId: 0,
             type: 0,
         }
+        // ztree的JSON树
+        ,menuJSON:{}
         , menu: {}
         // 定义模块名称
         , moduleName: "menu"
@@ -138,7 +141,7 @@ var vm = new Vue({
             vm.title = PAGE_INSERT_TITLE;
 
             //3.加载树控件
-            vm.getMenuTree();
+            vm.loadMenuTree();
 
             // 4. 清空表单数据
             vm.model = {
@@ -162,11 +165,11 @@ var vm = new Vue({
                 return;
             }
 
-            // 校验表单父级菜单
-            if (vm.model.parentId.trim() == null || vm.model.parentId.trim() == "") {
-                vm.errorMessage = "请选择父级菜单！";
-                return;
-            }
+            //  校验表单父级菜单
+            // if (vm.model.parentId.trim() == null ) {
+            //     vm.errorMessage = "请选择父级菜单！";
+            //     return;
+            // }
 
             // 执行新增操作
             if (vm.model.id == null) {
@@ -223,6 +226,9 @@ var vm = new Vue({
                 vm.title = PAGE_UPDATE_TITLE;
                 vm.model = r.model;
             });
+
+            //加载树控件
+            vm.loadMenuTree();
         }
 
         // 执行修改操作
@@ -297,25 +303,23 @@ var vm = new Vue({
             // 刷新表格数据
             bsTable.createBootStrapTable(showColumns, APP_NAME + "/sys/" + vm.moduleName + "/list?rnd=" + Math.random(), vm.queryOption);
         }
-        , getMenuTree: function () {
-            function getMenuJson(url) {
-                var zNodes;
-                $.ajax({
-                    url: url,
-                    dataType: 'JSON',
-                    type: 'POST',
-                    async: false,
-                    success: function (data, status) {
-                        var nodes = JSON.stringify(data.model);
-                        zNodes = eval(nodes);
-                    }
-                });
-                return zNodes;
-            }
-
-            ztree = $.fn.zTree.init($("#menuTree"), setting, getMenuJson(APP_NAME + "/sys/" + vm.moduleName + "/queryMenu"));
+        , loadMenuTree: function () {
+            vm.getMenuJson();
+            ztree = $.fn.zTree.init($("#menuTree"), setting, vm.menuJSON);
             //展开所有节点
             ztree.expandAll(true);
+        }
+        , getMenuJson: function () {
+            $.ajax({
+                url: APP_NAME + "/sys/menu/queryAllMenus",
+                dataType: 'JSON',
+                type: 'POST',
+                async: false,
+                success: function (data, status) {
+                    var nodes = JSON.stringify(data);
+                    vm.menuJSON = eval(nodes);
+                }
+            });
         }
         , showMenuTree: function () {
 

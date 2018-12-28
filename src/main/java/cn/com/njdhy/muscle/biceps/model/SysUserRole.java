@@ -16,7 +16,7 @@ public class SysUserRole extends BaseModel {
     /**
      * 用户ID
      */
-    private String userId;
+    private Integer userId;
 
     /**
      * 角色ID

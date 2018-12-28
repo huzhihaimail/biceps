@@ -7,7 +7,9 @@ import cn.com.njdhy.muscle.biceps.exception.ApplicationException;
 import cn.com.njdhy.muscle.biceps.exception.sys.UserErrorCode;
 import cn.com.njdhy.muscle.biceps.model.SysRole;
 import cn.com.njdhy.muscle.biceps.model.SysUser;
+import cn.com.njdhy.muscle.biceps.model.SysUserRole;
 import cn.com.njdhy.muscle.biceps.service.sys.SysRoleService;
+import cn.com.njdhy.muscle.biceps.service.sys.SysUserRoleService;
 import cn.com.njdhy.muscle.biceps.service.sys.SysUserService;
 import cn.com.njdhy.muscle.biceps.util.ShiroUtil;
 import com.github.pagehelper.PageInfo;
@@ -31,10 +33,11 @@ import java.util.Map;
 @RequestMapping("/sys/user")
 public class UserCtl {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserCtl.class);
-
     @Autowired
     private SysUserService sysUserService;
+
+    @Autowired
+    private SysUserRoleService sysUserRoleService;
 
     @Autowired
     private SysRoleService sysRoleService;
@@ -114,6 +117,10 @@ public class UserCtl {
 
             // 执行修改
             sysUserService.update(sysUser);
+            SysUserRole sysUserRole = new SysUserRole();
+            sysUserRole.setRoleId(sysUser.getRoleId());
+            sysUserRole.setUserId(sysUser.getId());
+            sysUserRoleService.update(sysUserRole);
         } catch (RuntimeException e) {
             return Result.error(UserErrorCode.SYS_USER_UPDATE_APP_ERROR_CODE, UserErrorCode.SYS_USER_UPDATE_APP_ERROR_MESSAGE);
         } catch (Exception e) {

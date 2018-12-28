@@ -65,4 +65,9 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenu> imp
     public List<String> queryPermissionByUserName(String loginName) {
         return this.dao.queryPermissionByUserName(loginName);
     }
+
+    @Override
+    public List<SysMenu> queryZtreeListByUserId(Integer id) {
+        return this.dao.queryZtreeListByUserId(id);
+    }
 }

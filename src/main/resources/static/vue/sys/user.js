@@ -153,15 +153,20 @@ var vm = new Vue({
                 return;
             }
 
-            if (vm.model.password.trim().length < 6 || vm.model.password.trim().length > 16) {
-                vm.errorMessage = "密码长度不能小于6位大于16位";
-                return;
-            }
+            // 新增判断密码
+            if(vm.model.id == null)
+            {
+                if (vm.model.password.trim().length < 6 || vm.model.password.trim().length > 32) {
+                    alert(vm.model.password);
+                    vm.errorMessage = "密码长度不能小于6位大于32位";
+                    return;
+                }
 
-            //确认密码
-            if (vm.model.newPassword.trim() != vm.model.password.trim()) {
-                vm.errorMessage = "两次密码必须保持一致";
-                return;
+                //确认密码
+                if (vm.model.newPassword.trim() != vm.model.password.trim()) {
+                    vm.errorMessage = "两次密码必须保持一致";
+                    return;
+                }
             }
 
             //电子邮箱
