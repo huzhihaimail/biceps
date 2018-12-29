@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 【命名规范说明 】 1. 文件名采用 "表名.xml" 的方式； 2. 每个SQL上需要编写该条SQL的注释； 3. SQL关键字采用全大写的方式； 4. 如果允许，请尽量保持SQL的ID和对应的业务方法名保持一致； 5. 查询SQL如果需要使用自动分页，则其SQL的ID必须使用ByPage结尾； 
+	6. 可以使用MyBatis流程控制语句来实现SQL的重用； 6. 注意SQL排版； -->
+
+<mapper namespace="cn.com.njdhy.muscle.biceps.dao.SysQuartzJobDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap id="QuartzJobMap" type="SysQuartzJob">
+        <result property="id" column="id"/>
+        <result property="jobName" column="job_name"/>
+        <result property="jobGroup" column="job_group"/>
+        <result property="jobStatus" column="job_status"/>
+        <result property="cronExpression" column="cron_expression"/>
+        <result property="description" column="description"/>
+        <result property="isConcurrent" column="is_concurrent"/>
+        <result property="springId" column="spring_id"/>
+        <result property="methodName" column="method_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <!-- 配置表名 -->
+    <sql id="tableName">
+        sys_quartz_job
+    </sql>
+
+    <!-- for insert columns -->
+    <sql id="columns">
+        id, job_name, job_group, job_status, cron_expression, description, is_concurrent, spring_id, method_name,create_time,update_time
+    </sql>
+
+    <!-- for insert value -->
+    <sql id="values">
+        #{id}, #{jobName}, #{jobGroup}, #{jobStatus}, #{cronExpression}, #{description}, #{isConcurrent},#{springId},#{methodName}, NOW(),NOW()
+    </sql>
+
+    <select id="queryList" resultMap="QuartzJobMap" parameterType="map">
+        SELECT
+        t.id,
+        t.job_name,
+        t.job_group,
+        t.job_status,
+        t.cron_expression,
+        t.description,
+        t.is_concurrent,
+        t.spring_id,
+        t.method_name,
+        t.create_time,
+        t.update_time
+        FROM
+        sys_quartz_job t
+        where 1=1
+        <if test="keyword!=null and keyword!=''">
+            AND job_name LIKE CONCAT('%',#{keyword},'%')
+        </if>
+        order by id desc
+
+    </select>
+
+    <!-- 根据ID查询-->
+    <select id="queryById" resultMap="QuartzJobMap" parameterType="map">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="tableName"/>
+        WHERE 1 = 1
+        AND id=#{id}
+    </select>
+
+    <!-- 批量删除-->
+    <delete id="deleteByIds" parameterType="java.util.List">
+        DELETE FROM
+        <include refid="tableName"/>
+        WHERE 1=1
+        AND id IN
+        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 新建  useGeneratedKeys="true" 用于返回新增后的id值-->
+    <insert id="insert" parameterType="SysQuartzJob" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO
+        <include refid="tableName"/>
+        (<include refid="columns"/>)
+        VALUES
+        (<include refid="values"/>)
+    </insert>
+
+    <!-- 修改-->
+    <update id="update" parameterType="SysQuartzJob">
+        UPDATE
+        <include refid="tableName"/>
+        SET
+        <if test="jobName!=null and jobName!=''">
+            job_name=#{jobName},
+        </if>
+        <if test="jobGroup!=null and jobGroup!=''">
+            job_group=#{jobGroup},
+        </if>
+        <if test="jobStatus!=null and jobStatus!=''">
+            job_status=#{jobStatus},
+        </if>
+        <if test="cronExpression!=null and cronExpression!=''">
+            cron_expression=#{cronExpression},
+        </if>
+        <if test="description!=null and description!=''">
+            description=#{description},
+        </if>
+        <if test="isConcurrent!=null and isConcurrent!=''">
+            is_concurrent=#{isConcurrent},
+        </if>
+        <if test="springId!=null and springId!=''">
+            spring_id=#{springId},
+        </if>
+        <if test="methodName!=null and methodName!=''">
+            method_name=#{methodName},
+        </if>
+            update_time=Now()
+        WHERE 1=1
+        AND id = #{id}
+    </update>
+
+    <select id="queryAllList" resultMap="QuartzJobMap">
+        select * from sys_quartz_job
+    </select>
+
+</mapper>
+
