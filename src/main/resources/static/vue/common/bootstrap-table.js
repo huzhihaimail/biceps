@@ -19,6 +19,15 @@ BootStrapTable.prototype.getMultiRowIds = function () {
 
     return ids;
 }
+BootStrapTable.prototype.getMultiRowConfigIds = function () {
+    var ids = new Array();
+    var rows = $table.bootstrapTable('getAllSelections');
+    for (i = 0; i < rows.length; i++) {
+        ids[i] = rows[i].configId;
+    }
+
+    return ids;
+}
 
 /**
  * 取消所有选择

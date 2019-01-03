@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+【命名规范说明 】
+1. 文件名采用 "表名.xml" 的方式；
+2. 每个SQL上需要编写该条SQL的注释；
+3. SQL关键字采用全大写的方式；
+4. 如果允许，请尽量保持SQL的ID和对应的业务方法名保持一致；
+5. 查询SQL如果需要使用自动分页，则其SQL的ID必须使用ByPage结尾；
+6. 可以使用MyBatis流程控制语句来实现SQL的重用；
+6. 注意SQL排版；
+-->
+
+<mapper namespace="cn.com.njdhy.muscle.biceps.dao.SysConfigDao">
+
+    <resultMap id="SysConfigMap" type="SysConfig">
+        <result property="configId" column="config_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="key" column="key"/>
+        <result property="value" column="value"/>
+        <result property="status" column="status"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <!-- 配置表名 -->
+    <sql id="tableName">
+        sys_config
+    </sql>
+
+    <!-- for insert columns -->
+    <sql id="columns">
+        config_id, parent_id, `key`, `value`, status, remark
+    </sql>
+
+    <!-- for insert value -->
+    <sql id="values">
+        #{configId}, #{parentId}, #{key}, #{value}, #{status}, #{remark}
+    </sql>
+
+    <!-- for update set -->
+    <sql id="updates">
+        config_id=#{configId}, parent_id=#{parentId},`key`=#{key}, `value`=#{value}, status=#{status}, remark=#{remark}
+    </sql>
+
+    <!-- 查询加载表格 -->
+    <select id="queryList" resultMap="SysConfigMap" parameterType="map">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="tableName"/>
+        WHERE 1=1
+        AND status = 1
+        <if test="keyword!=null and keyword!=''">
+            AND `key` LIKE CONCAT('%',#{keyword},'%')
+            OR `value` LIKE CONCAT('%',#{keyword},'%')
+        </if>
+        <if test="sortName!=null and sorName!='' and sortOrder !=null and sortOrder!=''">
+            ORDER BY #{sortName} #{sortOrder}
+        </if>
+    </select>
+
+    <!-- 根据ID查询-->
+    <select id="queryById" resultMap="SysConfigMap" parameterType="String">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="tableName"/>
+        WHERE 1 = 1
+        AND config_id=#{configId}
+    </select>
+
+    <!-- 修改 -->
+    <update id="update" parameterType="SysConfig">
+        UPDATE
+        <include refid="tableName"/>
+        SET
+        <include refid="updates"/>
+        WHERE 1=1
+        AND config_id = #{configId}
+    </update>
+
+    <!-- 批量删除-->
+    <delete id="deleteByIds" parameterType="java.util.List">
+        DELETE FROM
+        <include refid="tableName"/>
+        WHERE 1=1
+        AND config_id IN
+        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 新建  -->
+    <insert id="saveConfig" parameterType="SysConfig" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        sys_config
+        (config_id, parent_id, `key`, `value`, status, remark)
+        VALUES
+        (#{configId}, #{parentId}, #{key}, #{value}, #{status}, #{remark})
+    </insert>
+
+    <select id="selectByParentId" resultMap="SysConfigMap">
+        SELECT
+        config_id,`key`
+        FROM
+        <include refid="tableName"/>
+        WHERE 1 = 1
+        AND parent_id=0
+    </select>
+
+
+</mapper>
+

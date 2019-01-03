@@ -14,47 +14,33 @@ var showColumns = [
             return index + 1;
         }
     }
-    , {
-        field: "name",
-        title: "角色名称",
-        width: "20%",
-        sortable: true,
-        sortName: "name" // sortName的值，需配置和数据库保持一致
-    }
-    , {
-        field: "nameCn",
-        title: "角色中文名称",
-        width: "10%",
-    }
     // , {
-    //     field: "status",
-    //     title: "状态",
-    //     width: "5%",
-    //     formatter: function (value, row, index) {
-    //         if (value == '0') {
-    //             return "<span class='label label-success'>启用</span>";
-    //         } else {
-    //             return "<span class='label label-danger'>停用</span>";
-    //         }
-    //     }
+    //     field: "configId",
+    //     title: "菜单id",
+    //     width: "10%",
     // }
     , {
-        field: "createDate",
-        title: "创建时间",
-        width: "20%",
-        formatter: function (value, row, index) {
-            return new moment(value).format('YYYY-MM-DD HH:mm:ss');
-        }
+        field: "parentId",
+        title: "父级ID",
+        width: "10%",
     }
     , {
-        field: "updateDate",
-        title: "最近修改时间",
+        field: "key",
+        title: "字段名",
         width: "20%",
-        formatter: function (value, row, index) {
-            return new moment(value).format('YYYY-MM-DD HH:mm:ss');
-        }
     }
-    /*, {menu/queryAllMenuInsert
+    , {
+        field: "value",
+        title: "字段值",
+        width: "20%",
+    }
+    , {
+        field: "remark",
+        title: "备注",
+        width: "10%"
+
+    }
+    /*, {
         field: "operate",
         title: "操作",
         width: "15%",
@@ -66,33 +52,18 @@ var showColumns = [
     }*/
 ];
 
-
-// 通用表格对象
-var bsTable = new BootStrapTable();
-// 如果有特殊表格需要处理，此处可以覆写覆写自己的表格属性 BootStrapTable.prototype.initBootstrapTable = function (columns, url, queryOpt) {}
-
 var setting = {
     view: {
         selectedMulti: false,
         showIcon: true
     },
     check: {
-        enable: true,
-        //样式设置为checkbox 复选框 也可以设置为单选框 radioButton
-        chkStyle:'checkbox',
-        //Y-勾选节点
-        //N-取消勾选
-        //p-parent 是否关联父节点
-        //s-sun 是否关联子节点
-        chkboxType:{
-            'Y':'ps',
-            'N':'s'
-        }
+        enable: true
     },
     data: {
         simpleData: {
             enable: true,
-            idKey: "menuId",
+            idKey: "configId",
             pIdKey: "parentId",
             rootPId: -1
         }
@@ -103,6 +74,9 @@ var setting = {
 };
 
 var ztree;
+// 通用表格对象
+var bsTable = new BootStrapTable();
+// 如果有特殊表格需要处理，此处可以覆写覆写自己的表格属性 BootStrapTable.prototype.initBootstrapTable = function (columns, url, queryOpt) {}
 
 // 定义vue实例
 var vm = new Vue({
@@ -115,20 +89,18 @@ var vm = new Vue({
 
         /* 定义页面操作参数 */
         , show: true// 切换页面中的查询和新建（编辑）页面
-        , showPwd: true // 显示修改密码框
         , errorMessage: null // 异常信息
         , title: null // 标题
         , vueQueryParam: { // 查询参数
             keyword: null,
         }
-        , model: {} //实体对象(用于新建、修改页面)
-        , roles: [] // 加载角色列表对象
-
+        //实体对象(用于新建、修改页面)
+        , model: {
+        }
+        //所有的父级id
+        , parentIds:{}
         // 定义模块名称
-        , moduleName: "role"
-        // ztree的JSON树
-        , menuJSON: {}
-
+        , moduleName: "config"
     }
     // 定义方法
     , methods: {
@@ -146,36 +118,19 @@ var vm = new Vue({
 
             // 2. 设置标题
             vm.title = PAGE_INSERT_TITLE;
+
+
             // 3. 清空表单数据
             vm.model = {
-                menuIdList: new Array()
-            };
 
-            //4.加载树控件
-            vm.loadTree('menuTree', 'add');
+            }
+            //查询所有父级id
+            vm.queryAllParentId();
 
         }
 
         // 点击“确定”按钮
         , commit: function (el) {
-
-            // 校验表单
-            if (!vm.model.name || vm.model.name.trim() == "") {
-                vm.errorMessage = "请输入角色名";
-                return;
-            }
-            // 角色中文名
-            if (!vm.model.nameCn|| vm.model.nameCn.trim() == "") {
-                vm.errorMessage = "请输入角色中文名";
-                return;
-            }
-
-            //获取选择的菜单
-            var nodes = ztree.getCheckedNodes(true);
-            if (nodes == null || nodes == "") {
-                vm.errorMessage = "请选择菜单";
-                return;
-            }
 
             // 执行新增操作
             if (vm.model.id == null) {
@@ -189,14 +144,6 @@ var vm = new Vue({
 
         // 执行保存操作
         , doSave: function () {
-
-            //获取选择的菜单
-            var nodes = ztree.getCheckedNodes(true);
-            var menuIdList = new Array();
-            for (var i = 0; i < nodes.length; i++) {
-                menuIdList.push(nodes[i].menuId);
-            }
-            vm.model.menuIdList = menuIdList;
 
             // 2. 入库
             $.ajax({
@@ -224,12 +171,10 @@ var vm = new Vue({
         // 显示修改页面
         , update: function () {
 
-            // 隐藏密码框
-            vm.showPwd = false;
             vm.errorMessage = null;
 
             // 获取所选择选择数据行的ID（可能选择多行）
-            var ids = bsTable.getMultiRowIds();
+            var ids = bsTable.getMultiRowConfigIds();
 
             // 校验只能选择一行
             if (ids.length != 1) {
@@ -242,21 +187,13 @@ var vm = new Vue({
                 vm.title = PAGE_UPDATE_TITLE;
                 vm.model = r.model;
             });
+            //查询所有父级id
+            vm.queryAllParentId();
 
-            //5.加载树控件
-            vm.loadTree('menuTree', 'update');
         }
 
         // 执行修改操作
         , doUpdate: function () {
-
-            //获取选择的菜单
-            var nodes = ztree.getCheckedNodes(true);
-            var menuIdList = new Array();
-            for (var i = 0; i < nodes.length; i++) {
-                menuIdList.push(nodes[i].menuId);
-            }
-            vm.model.menuIdList = menuIdList;
 
             // 执行修改
             $.ajax({
@@ -280,16 +217,13 @@ var vm = new Vue({
 
         // 点击“删除”按钮
         , del: function (event) {
-
             // 获取选择记录ID
-            var ids = bsTable.getMultiRowIds();
-
-            // 校验未选择任何一行
-            if (ids == null || ids.length <= 0) {
+            var ids = bsTable.getMultiRowConfigIds();
+            // 校验只能选择一行
+            if (ids.length != 1) {
                 alert(PAGE_SELECT_ONE);
                 return;
             }
-
             confirm(PAGE_ARE_YOU_SURE_DEL, function () {
                 $.ajax({
                     type: "POST",
@@ -327,54 +261,21 @@ var vm = new Vue({
             // 刷新表格数据
             bsTable.createBootStrapTable(showColumns, APP_NAME + "/sys/" + vm.moduleName + "/list?rnd=" + Math.random(), vm.queryOption);
         }
-
-        // 获取ztree的JSON数据
-        , loadTree: function (id, type) {
-
-            if (type == 'add') {
-                // 加载menuJson
-                vm.getMenuJson();
-
-                ztree = $.fn.zTree.init($("#" + id), setting, vm.menuJSON);
-                ztree.expandAll(true);
-            } else if (type == 'update') {
-
-                var ids = bsTable.getMultiRowIds();
-                var selectedId = ids[0];
-                // 加载menuJson
-                vm.getMenuJsonById(selectedId);
-                vm.getMenuJson();
-                ztree = $.fn.zTree.init($("#" + id), setting, vm.menuJSON);
-                ztree.expandAll(true);
-            }
-
-        }
-
-        // 加载角色列表
-        , getMenuJson: function () {
+        //查询所有父级id
+        ,queryAllParentId:function(){
             $.ajax({
-                url: APP_NAME + "/sys/menu/queryAllMenus",
-                dataType: 'JSON',
-                type: 'POST',
-                async: false,
-                success: function (data, status) {
-                    var nodes = JSON.stringify(data);
-                    vm.menuJSON = eval(nodes);
+                type: "GET",
+                url: APP_NAME + "/sys/" + vm.moduleName + "/queryAllParentId",
+                contentType: "application/json",
+                success: function (r) {
+                    if (r.code === 0) {
+                        vm.parentIds = r.parentIds;
+                    }
                 }
             });
         }
-        , getMenuJsonById: function (id) {
-            $.ajax({
-                url: APP_NAME + "/sys/roleMenu/" + id,
-                dataType: 'JSON',
-                type: 'POST',
-                async: false,
-                success: function (data, status) {
-                    var nodes = JSON.stringify(data.model);
-                    vm.menuJSON = eval(nodes);
-                }
-            });
-        }
+
+
 
     }
 });
@@ -385,7 +286,7 @@ var vm = new Vue({
 $(function () {
 
     // 创建BootStrapTable
-    bsTable.createBootStrapTable(vm.columns, APP_NAME + "/sys/" + vm.moduleName + "/list?rnd=" + Math.random(), vm.queryOption)
+    bsTable.createBootStrapTable(vm.columns, APP_NAME + "/sys/" + vm.moduleName + "/list?rnd=" + Math.random(), vm.queryOption);
 });
 
 

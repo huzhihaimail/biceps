@@ -154,8 +154,7 @@ var vm = new Vue({
             }
 
             // 新增判断密码
-            if(vm.model.id == null)
-            {
+            if (vm.model.id == null) {
                 if (vm.model.password.trim().length < 6 || vm.model.password.trim().length > 32) {
                     alert(vm.model.password);
                     vm.errorMessage = "密码长度不能小于6位大于32位";
@@ -188,7 +187,7 @@ var vm = new Vue({
             if (!vm.model.mobile || vm.model.mobile.trim() == "") {
                 vm.errorMessage = "请输入手机号码";
                 return;
-            }else{
+            } else {
                 // 定义校验规则
                 var regPhone = /^1[3|4|5|6|7|8|9]\d{9}$/;
                 var flag = regPhone.test(vm.model.mobile.trim());
@@ -258,12 +257,13 @@ var vm = new Vue({
             });
             // 加载角色列表
             vm.loadRoles();
+            vm.showLoadRolesCheck();
 
         }
 
         // 执行修改操作
         , doUpdate: function () {
-
+            vm.model.userRoles = vm.userRoles;
             // 执行修改
             $.ajax({
                 type: "POST",
@@ -289,7 +289,6 @@ var vm = new Vue({
 
             // 获取选择记录ID
             var ids = bsTable.getMultiRowIds();
-
             // 校验未选择任何一行
             if (ids == null || ids.length <= 0) {
                 alert(PAGE_SELECT_ONE);
@@ -332,10 +331,38 @@ var vm = new Vue({
 
         // 加载角色列表
         , loadRoles: function () {
-            $.get(APP_NAME + vm.moduleName + "/loadRoles", function (r) {
-                vm.roles = r.page;
+            $.ajax({
+                type: "GET",
+                url: APP_NAME + vm.moduleName + "/loadRoles",
+                contentType: "application/json",
+                success: function (r) {
+                    if (r.code == 0) {
+                        vm.roles = r.page;
+                    } else if (r.code) {
+                        alert(r.msg);
+                    } else {
+                        alert(r.msg);
+                    }
+                }
             });
+
         }
+        // 显示角色勾选
+        , showLoadRolesCheck: function () {
+            if (vm.roles != null) {
+                console.log(vm.roles);
+                for(var i=0;i<vm.roles.length;i++){
+                    $("input[name='role'][value='" + vm.roles[i].id + "']").attr("checked", true);
+                }
+                // $.each(vm.roles, function (key, value) {
+                //     console.log(value.id);
+                //     $("input[name='role'][value='" + value.id + "']").attr("checked", true);
+                // });
+            }
+
+
+        }
+
 
     }
 });

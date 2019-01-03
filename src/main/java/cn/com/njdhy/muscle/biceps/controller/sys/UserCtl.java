@@ -89,7 +89,6 @@ public class UserCtl {
 
         try {
             // 校验参数
-            // TODO: 2018/3/14
             // 执行入库操作
             sysUserService.saveUser(sysUser);
         } catch (ApplicationException e) {
@@ -168,7 +167,6 @@ public class UserCtl {
             if (StringUtils.isEmpty(loginUserName)) {
                 return Result.error(UserErrorCode.SYS_USER_LOAD_ROLES_APP_ERROR_CODE, UserErrorCode.SYS_USER_LOAD_ROLES_APP_ERROR_MESSAGE);
             }
-
 
             // 设置查询参数
             Map<String, Object> params = new HashMap<>();
