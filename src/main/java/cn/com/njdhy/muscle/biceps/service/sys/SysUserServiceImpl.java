@@ -71,8 +71,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUser> imp
         // 查询用户信息
         SysUser user = this.dao.queryById(String.valueOf(sysUser.getId()));
         // 查询用户的角色信息
-        SysUserRole userRole = sysUserRoleService.queryById(String.valueOf(sysUser.getId()));
-        user.setRoleId(userRole.getRoleId());
+        List<SysUserRole> roleList = sysUserRoleService.queryRoleList(String.valueOf(sysUser.getId()));
+        List<String> list = new ArrayList<>();
+        for (SysUserRole role : roleList){
+            list.add(role.getRoleId());
+        }
+        user.setUserRoles(list);
 
         return user;
     }

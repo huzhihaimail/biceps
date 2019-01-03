@@ -127,7 +127,7 @@
                     <div class="col-sm-3 control-label">选择角色<span class="text-danger">*</span></div>
                     <div class="col-sm-9">
                         <label class="checkbox-inline" v-for="item in roles" >
-                            <input  type="checkbox" name="role" value="item.id" v-model="userRoles">
+                            <input  type="checkbox" name="role" :value="item.id" v-model="userRoles">
                             {{item.nameCn}}
                         </label>
                     </div>

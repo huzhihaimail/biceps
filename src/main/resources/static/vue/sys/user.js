@@ -117,6 +117,8 @@ var vm = new Vue({
             vm.title = PAGE_INSERT_TITLE;
             // 3. 清空表单数据
             vm.model = {};
+            // 清空角色数据
+            vm.userRoles = [];
 
             // 4. 加载角色列表
             vm.loadRoles();
@@ -243,21 +245,23 @@ var vm = new Vue({
 
             // 获取所选择选择数据行的ID（可能选择多行）
             var ids = bsTable.getMultiRowIds();
-
+            vm.userRoles = [];
             // 校验只能选择一行
             if (ids.length != 1) {
                 alert(PAGE_SELECT_ONE);
                 return;
             }
 
+            // 加载角色列表
+            vm.loadRoles();
+            $.ajaxSettings.async = false;
             $.get(APP_NAME + vm.moduleName + "/" + ids[0], function (r) {
                 vm.show = false;
                 vm.title = PAGE_UPDATE_TITLE;
                 vm.model = r.model;
+                vm.userRoles = vm.model.userRoles;
+                $.ajaxSettings.async = true;
             });
-            // 加载角色列表
-            vm.loadRoles();
-            vm.showLoadRolesCheck();
 
         }
 
@@ -345,25 +349,7 @@ var vm = new Vue({
                     }
                 }
             });
-
         }
-        // 显示角色勾选
-        , showLoadRolesCheck: function () {
-            if (vm.roles != null) {
-                console.log(vm.roles);
-                for(var i=0;i<vm.roles.length;i++){
-                    $("input[name='role'][value='" + vm.roles[i].id + "']").attr("checked", true);
-                }
-                // $.each(vm.roles, function (key, value) {
-                //     console.log(value.id);
-                //     $("input[name='role'][value='" + value.id + "']").attr("checked", true);
-                // });
-            }
-
-
-        }
-
-
     }
 });
 

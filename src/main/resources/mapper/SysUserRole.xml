@@ -92,5 +92,9 @@
         WHERE 1=1
     </select>
 
+    <select id="queryUserRoleList" resultMap="SysUserRoleMap">
+        select * from sys_user_role ur where ur.user_id=#{userId}
+    </select>
+
 </mapper>
 
