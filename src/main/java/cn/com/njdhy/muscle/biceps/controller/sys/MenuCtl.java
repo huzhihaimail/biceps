@@ -168,10 +168,8 @@ public class MenuCtl {
             }
 
         } catch (ApplicationException e) {
-            e.printStackTrace();
             return Result.error(MenuErrorCode.SYS_MENU_DELETE_APP_ERROR_CODE, MenuErrorCode.SYS_MENU_DELETE_APP_ERROR_MESSAGE);
         } catch (Exception e) {
-            e.printStackTrace();
             return Result.error(MenuErrorCode.SYS_MENU_DELETE_ERROR_CODE, MenuErrorCode.SYS_MENU_DELETE_ERROR_MESSAGE);
         }
 

@@ -157,10 +157,8 @@ public class ConfigCtl {
                 }
             }
         } catch (ApplicationException e) {
-            e.printStackTrace();
             return Result.error(e.getCode(), e.getMsg());
         } catch (Exception e) {
-            e.printStackTrace();
             return Result.error(e.getMessage());
         }
 
