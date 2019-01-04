@@ -7,9 +7,7 @@ import cn.com.njdhy.muscle.biceps.exception.ApplicationException;
 import cn.com.njdhy.muscle.biceps.exception.sys.UserErrorCode;
 import cn.com.njdhy.muscle.biceps.model.SysRole;
 import cn.com.njdhy.muscle.biceps.model.SysUser;
-import cn.com.njdhy.muscle.biceps.model.SysUserRole;
 import cn.com.njdhy.muscle.biceps.service.sys.SysRoleService;
-import cn.com.njdhy.muscle.biceps.service.sys.SysUserRoleService;
 import cn.com.njdhy.muscle.biceps.service.sys.SysUserService;
 import cn.com.njdhy.muscle.biceps.util.ShiroUtil;
 import com.github.pagehelper.PageInfo;
@@ -52,7 +50,12 @@ public class UserCtl {
     @RequestMapping("/list")
     public Result index(@RequestParam Map<String, Object> params, Integer pageNumber, Integer pageSize) {
         Query queryParam = new Query(params);
-        PageInfo<SysUser> result = sysUserService.queryList(queryParam, pageNumber, pageSize);
+        PageInfo<SysUser> result=null;
+        try {
+            result = sysUserService.queryList(queryParam, pageNumber, pageSize);
+        } catch (Exception e) {
+            return Result.error(UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_CODE,UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_MESSAGE);
+        }
 
         return Result.success(result.getTotal(), result.getList());
     }
@@ -64,18 +67,24 @@ public class UserCtl {
      */
     @RequestMapping("/{id}")
     public Result queryById(@PathVariable String id) {
-        //校验参数
-        if (ObjectUtils.isEmpty(id)){
-            return Result.error(UserErrorCode.SYS_USER_PARMETER_ERROR_CODE, UserErrorCode.SYS_USER_PARMETER_ERROR_MESSAGE);
-        }
-        //查询信息
-        SysUser user = new SysUser();
-        user.setId(Integer.valueOf(id));
-        SysUser model = sysUserService.queryUserInfo(user);
+        SysUser model =null;
+        try {
+            //校验参数
+            if (ObjectUtils.isEmpty(id)){
+                return Result.error(UserErrorCode.SYS_USER_PARMETER_ERROR_CODE, UserErrorCode.SYS_USER_PARMETER_ERROR_MESSAGE);
+            }
+            //查询信息
+            SysUser user = new SysUser();
+            user.setId(Integer.valueOf(id));
+            model = sysUserService.queryUserInfo(user);
 
-        if (ObjectUtils.isEmpty(model)) {
-            model = new SysUser();
+            if (ObjectUtils.isEmpty(model)) {
+                model = new SysUser();
+            }
+        } catch (Exception e) {
+            return Result.error(UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_CODE,UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_MESSAGE);
         }
+
         return Result.success().put("model", model);
     }
 

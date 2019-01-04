@@ -5,20 +5,15 @@ import cn.com.njdhy.muscle.biceps.controller.Query;
 import cn.com.njdhy.muscle.biceps.controller.Result;
 import cn.com.njdhy.muscle.biceps.exception.ApplicationException;
 import cn.com.njdhy.muscle.biceps.exception.sys.QuartzJobErrorCode;
-import cn.com.njdhy.muscle.biceps.exception.sys.QuartzJobErrorCode;
 import cn.com.njdhy.muscle.biceps.model.SysQuartzJob;
-import cn.com.njdhy.muscle.biceps.model.SysRole;
 import cn.com.njdhy.muscle.biceps.service.sys.SysQuartzJobService;
-import cn.com.njdhy.muscle.biceps.service.sys.SysRoleService;
 import cn.com.njdhy.muscle.biceps.util.EmptyUtils;
 import com.github.pagehelper.PageInfo;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
-import sun.invoke.empty.Empty;
 
 import java.util.List;
 import java.util.Map;
@@ -69,15 +64,17 @@ public class QuartzJobCtl {
      */
     @RequestMapping("/{id}")
     public Result queryById(@PathVariable String id) {
-
-        if (EmptyUtils.isEmpty(id)){
-            return Result.error("请选择一条数据");
-        }
-
-        SysQuartzJob model = sysQuartzJobService.queryById(id);
-
-        if (ObjectUtils.isEmpty(model)) {
-            model = new SysQuartzJob();
+        SysQuartzJob model=null;
+        try {
+            if (EmptyUtils.isEmpty(id)) {
+                return Result.error("请选择一条数据");
+            }
+            model = sysQuartzJobService.queryById(id);
+            if (ObjectUtils.isEmpty(model)) {
+                model = new SysQuartzJob();
+            }
+        } catch (Exception e) {
+            return Result.error(QuartzJobErrorCode.SYS_QUARTZJOB_QUERY_ERROR_CODE,QuartzJobErrorCode.SYS_QUARTZJOB_QUERY_ERROR_MESSAGE);
         }
 
         return Result.success().put("model", model);
@@ -94,7 +91,7 @@ public class QuartzJobCtl {
 
         try {
             // 校验参数
-            if (EmptyUtils.isEmpty(sysQuartzJob.getJobName())){
+            if (EmptyUtils.isEmpty(sysQuartzJob.getJobName())) {
                 return Result.error("任务名不能为空");
             }
             // 执行入库操作
@@ -121,10 +118,9 @@ public class QuartzJobCtl {
 
         try {
             // 校验参数
-            if (EmptyUtils.isEmpty(sysQuartzJob.getJobName())){
+            if (EmptyUtils.isEmpty(sysQuartzJob.getJobName())) {
                 return Result.error("任务名不能为空");
             }
-
             // 执行修改
             sysQuartzJobService.update(sysQuartzJob);
         } catch (RuntimeException e) {
@@ -149,7 +145,7 @@ public class QuartzJobCtl {
 
         try {
             // 校验参数
-            if (EmptyUtils.isEmpty(ids)){
+            if (EmptyUtils.isEmpty(ids)) {
                 return Result.error("请选择删除的对象");
             }
             sysQuartzJobService.deleteByIds(ids);
@@ -172,6 +168,10 @@ public class QuartzJobCtl {
     public Result changeStart(@RequestBody List<String> ids) {
 
         try {
+            // 校验参数
+            if (EmptyUtils.isEmpty(ids)) {
+                return Result.error("请选择启动的对象");
+            }
             sysQuartzJobService.changeJobStart(ids.get(0));
         } catch (ApplicationException e) {
             return Result.error(e.getCode(), e.getMsg());
@@ -191,6 +191,10 @@ public class QuartzJobCtl {
     public Result changeStop(@RequestBody List<String> ids) {
 
         try {
+            // 校验参数
+            if (EmptyUtils.isEmpty(ids)) {
+                return Result.error("请选择要停止的对象");
+            }
             sysQuartzJobService.changeJobStop(ids.get(0));
         } catch (ApplicationException e) {
             return Result.error(e.getCode(), e.getMsg());

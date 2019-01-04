@@ -4,7 +4,6 @@ import cn.com.njdhy.muscle.biceps.controller.Query;
 import cn.com.njdhy.muscle.biceps.controller.Result;
 import cn.com.njdhy.muscle.biceps.exception.ApplicationException;
 import cn.com.njdhy.muscle.biceps.exception.sys.ConfigErrorCode;
-import cn.com.njdhy.muscle.biceps.exception.sys.UserErrorCode;
 import cn.com.njdhy.muscle.biceps.model.*;
 import cn.com.njdhy.muscle.biceps.service.sys.SysConfigService;
 import com.github.pagehelper.PageInfo;
@@ -40,14 +39,13 @@ public class ConfigCtl {
             for (SysConfig sysConfig : sysConfigs) {
 
                 if (sysConfig.getParentId() == 0) {
-                    sysConfig.setParentKey("一级菜单");
+                    sysConfig.setParentKey("一级参数");
                 } else {
                     SysConfig s = sysConfigService.queryById(String.valueOf(sysConfig.getParentId()));
                     sysConfig.setParentKey(s.getKey());
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return Result.error(ConfigErrorCode.SYS_CONFIG_QUERY_ERROR_CODE, ConfigErrorCode.SYS_CONFIG_QUERY_ERROR_MESSAGE);
         }
 

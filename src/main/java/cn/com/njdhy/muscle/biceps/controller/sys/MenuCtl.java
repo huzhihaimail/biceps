@@ -211,19 +211,23 @@ public class MenuCtl {
      */
     @RequestMapping("/queryAllMenuInsert")
     public Result queryAllMenu() {
-
         List<ZTree> treeList = new ArrayList<>();
-        //查询列表数据
-        List<SysMenu> allMenuList = sysMenuService.queryAllMenu();
+        List<SysMenu> allMenuList = null;
+        try {
+            //查询列表数据
+            allMenuList = sysMenuService.queryAllMenu();
 
-        if (!ObjectUtils.isEmpty(allMenuList)) {
-            for (SysMenu menu : allMenuList) {
-                ZTree tree = new ZTree();
-                tree.setMenuId(menu.getId());
-                tree.setParentId(menu.getParentId());
-                tree.setName(menu.getName());
-                treeList.add(tree);
+            if (!ObjectUtils.isEmpty(allMenuList)) {
+                for (SysMenu menu : allMenuList) {
+                    ZTree tree = new ZTree();
+                    tree.setMenuId(menu.getId());
+                    tree.setParentId(menu.getParentId());
+                    tree.setName(menu.getName());
+                    treeList.add(tree);
+                }
             }
+        } catch (Exception e) {
+            throw new RuntimeException("新增角色时查询所有菜单出现异常");
         }
 
         return Result.success().put("model", treeList);
@@ -265,7 +269,7 @@ public class MenuCtl {
                 }
             }
         } catch (Exception e) {
-            throw e;
+            throw new RuntimeException("查询所有菜单更新出现异常");
         }
 
         return Result.success().put("model", zTreeList);

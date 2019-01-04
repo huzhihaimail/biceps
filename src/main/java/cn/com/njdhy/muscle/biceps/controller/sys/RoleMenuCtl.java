@@ -34,9 +34,12 @@ public class RoleMenuCtl {
     public Result queryById(@PathVariable String id) {
         List<SysRoleMenu> model=null;
         try {
+            if (ObjectUtils.isEmpty(id)) {
+                return Result.error("500","查询角色信息参数不能为空!");
+            }
             model = sysRoleMenuService.queryMenuByRoleId(id);
         } catch (Exception e) {
-            e.printStackTrace();
+            return Result.error("500","查询角色信息出错");
         }
 
         return Result.success().put("model", model);

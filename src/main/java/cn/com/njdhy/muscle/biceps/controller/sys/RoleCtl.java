@@ -65,14 +65,17 @@ public class RoleCtl {
      */
     @RequestMapping("/{id}")
     public Result queryById(@PathVariable String id) {
-
-        if (ObjectUtils.isEmpty(id)){
-            return Result.error("500", "参数不能为空");
-        }
-        SysRole model = sysRoleService.queryById(id);
-
-        if (ObjectUtils.isEmpty(model)) {
-            model = new SysRole();
+        SysRole model=null;
+        try {
+            if (ObjectUtils.isEmpty(id)){
+                return Result.error("500", "参数不能为空");
+            }
+            model = sysRoleService.queryById(id);
+            if (ObjectUtils.isEmpty(model)) {
+                model = new SysRole();
+            }
+        } catch (Exception e) {
+            return Result.error(RoleErrorCode.SYS_ROLE_QUERY_ERROR_CODE,RoleErrorCode.SYS_ROLE_QUERY_ERROR_MESSAGE);
         }
 
         return Result.success().put("model", model);
@@ -89,7 +92,7 @@ public class RoleCtl {
     public Result insert(@RequestBody SysRole sysRole) {
 
         try {
-            // 校验参数 todo
+            // 校验参数
             if (ObjectUtils.isEmpty(sysRole)){
                 return Result.error("500", "角色信息不能为空");
             }
@@ -117,7 +120,6 @@ public class RoleCtl {
 
         try {
             // 校验参数
-            // TODO: 2018/3/14
             if (ObjectUtils.isEmpty(sysRole)){
                 return Result.error("500", "角色信息不能为空");
             }
@@ -147,7 +149,7 @@ public class RoleCtl {
     public Result deleteByIds(@RequestBody List<String> ids) {
 
         try {
-            // 校验参数 todo
+            // 校验参数
             if (ObjectUtils.isEmpty(ids)){
                 return Result.error("500", "角色id不能为空");
             }
