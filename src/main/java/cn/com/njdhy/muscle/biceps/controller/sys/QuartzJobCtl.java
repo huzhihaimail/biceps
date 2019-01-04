@@ -92,7 +92,7 @@ public class QuartzJobCtl {
         try {
             // 校验参数
             if (EmptyUtils.isEmpty(sysQuartzJob.getJobName())) {
-                return Result.error("任务名不能为空");
+                return Result.error("500","任务名称不可以是空!");
             }
             // 执行入库操作
             sysQuartzJobService.saveQuartzJob(sysQuartzJob);
@@ -119,7 +119,7 @@ public class QuartzJobCtl {
         try {
             // 校验参数
             if (EmptyUtils.isEmpty(sysQuartzJob.getJobName())) {
-                return Result.error("任务名不能为空");
+                return Result.error("请填写任务名称");
             }
             // 执行修改
             sysQuartzJobService.update(sysQuartzJob);

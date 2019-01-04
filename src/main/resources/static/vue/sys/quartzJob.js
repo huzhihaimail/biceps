@@ -114,7 +114,32 @@ var vm = new Vue({
 
         // 点击“确定”按钮
         , commit: function (el) {
+            // 判断任务
+            if (!vm.model.jobName || vm.model.jobName.trim() == "") {
+                vm.errorMessage = "请输入任务名称";
+                return;
+            }
+            if (!vm.model.jobGroup || vm.model.jobGroup.trim() == "") {
+                vm.errorMessage = "请输入任务分组";
+                return;
+            }
 
+            if (!vm.model.cronExpression || vm.model.cronExpression.trim() == "") {
+                vm.errorMessage = "请输入cron表达式";
+                return;
+            }
+            if (!vm.model.description || vm.model.description.trim() == "") {
+                vm.errorMessage = "请输入任务描述";
+                return;
+            }
+            if (!vm.model.springId || vm.model.springId.trim() == "") {
+                vm.errorMessage = "请输入类名";
+                return;
+            }
+            if (!vm.model.methodName || vm.model.methodName.trim() == "") {
+                vm.errorMessage = "请输入方法名";
+                return;
+            }
 
 
             // 执行新增操作
