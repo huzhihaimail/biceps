@@ -152,8 +152,8 @@ var vm = new Vue({
             };
 
             //4.加载树控件
-            vm.loadTree('menuTree', 'add');
-
+            // vm.loadTree('menuTree', 'add');
+            vm.loadTreeMenu('add');
         }
 
         // 点击“确定”按钮
@@ -244,7 +244,8 @@ var vm = new Vue({
             });
 
             //5.加载树控件
-            vm.loadTree('menuTree', 'update');
+            // vm.loadTree('menuTree', 'update');
+            vm.loadTreeMenu('update');
         }
 
         // 执行修改操作
@@ -326,6 +327,38 @@ var vm = new Vue({
 
             // 刷新表格数据
             bsTable.createBootStrapTable(showColumns, APP_NAME + "/sys/" + vm.moduleName + "/list?rnd=" + Math.random(), vm.queryOption);
+        }
+        , loadTreeMenu: function (type) {
+            function getMenuJson(url, data) {
+                var zNodes;
+                var role = {id: data};
+                $.ajax({
+                    url: url,
+                    dataType: 'JSON',
+                    type: 'POST',
+                    data: role,
+                    async: false,
+                    success: function (data, status) {
+                        var nodes = JSON.stringify(data.model);
+                        zNodes = eval(nodes);
+                    }
+                });
+                return zNodes;
+            }
+
+            if (type == 'add') {
+                var data = null;
+                ztree = $.fn.zTree.init($("#menuTree"), setting, getMenuJson(APP_NAME + "/sys/menu/queryAllMenuInsert", data));
+                //展开所有节点
+                ztree.expandAll(true);
+            } else if (type == 'update') {
+                var ids = bsTable.getMultiRowIds();
+                var data = ids[0];
+                ztree = $.fn.zTree.init($("#menuTree"), setting, getMenuJson(APP_NAME + "/sys/menu/queryAllMenuUpdate", data));
+                //展开所有节点
+                ztree.expandAll(true);
+            }
+
         }
 
         // 获取ztree的JSON数据

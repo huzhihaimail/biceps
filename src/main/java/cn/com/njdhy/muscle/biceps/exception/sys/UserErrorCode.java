@@ -49,4 +49,10 @@ public interface UserErrorCode {
      */
     String SYS_USER_LOAD_ROLES_ERROR_CODE = SYS_USER + "6";
     String SYS_USER_LOAD_ROLES_ERROR_MESSAGE = "查询角色出现根异常";
+
+    /**
+     * 加载角色异常
+     */
+    String SYS_USER_PARMETER_ERROR_CODE = SYS_USER + "7";
+    String SYS_USER_PARMETER_ERROR_MESSAGE = "参数id不能为空";
 }

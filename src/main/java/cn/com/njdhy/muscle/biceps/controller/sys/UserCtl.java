@@ -66,6 +66,11 @@ public class UserCtl {
      */
     @RequestMapping("/{id}")
     public Result queryById(@PathVariable String id) {
+        //校验参数
+        if (ObjectUtils.isEmpty(id)){
+            return Result.error(UserErrorCode.SYS_USER_PARMETER_ERROR_CODE, UserErrorCode.SYS_USER_PARMETER_ERROR_MESSAGE);
+        }
+        //查询信息
         SysUser user = new SysUser();
         user.setId(Integer.valueOf(id));
         SysUser model = sysUserService.queryUserInfo(user);
@@ -73,7 +78,6 @@ public class UserCtl {
         if (ObjectUtils.isEmpty(model)) {
             model = new SysUser();
         }
-
         return Result.success().put("model", model);
     }
 
@@ -136,7 +140,6 @@ public class UserCtl {
     public Result deleteByIds(@RequestBody List<String> ids) {
 
         try {
-            // 校验参数 todo
             sysUserService.deleteByIds(ids);
         } catch (ApplicationException e) {
             return Result.error(e.getCode(), e.getMsg());

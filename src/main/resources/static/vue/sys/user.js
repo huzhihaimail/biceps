@@ -184,6 +184,12 @@ var vm = new Vue({
                 }
             }
 
+            // 角色
+            if (vm.userRoles == null || vm.userRoles == "") {
+                vm.errorMessage = "请选择角色";
+                return;
+            }
+
             // 执行新增操作
             if (vm.model.id == null) {
                 vm.doSave();
