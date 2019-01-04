@@ -49,8 +49,10 @@ public class RoleCtl {
             return Result.success(result.getTotal(), result.getList());
 
         } catch (RuntimeException e) {
+            LOGGER.error(e.getMessage());
             return Result.error(RoleErrorCode.SYS_ROLE_QUERY_APP_ERROR_CODE, RoleErrorCode.SYS_ROLE_QUERY_APP_ERROR_MESSAGE);
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             return Result.error(RoleErrorCode.SYS_ROLE_QUERY_ERROR_CODE, RoleErrorCode.SYS_ROLE_QUERY_ERROR_MESSAGE);
         }
     }
@@ -89,8 +91,10 @@ public class RoleCtl {
             // 执行入库操作
             sysRoleService.insertRoleInfo(sysRole);
         } catch (ApplicationException e) {
+            LOGGER.error(e.getMsg());
             return Result.error(RoleErrorCode.SYS_ROLE_SAVE_APP_ERROR_CODE, RoleErrorCode.SYS_ROLE_SAVE_APP_ERROR_MESSAGE);
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             return Result.error(RoleErrorCode.SYS_ROLE_SAVE_ERROR_CODE, RoleErrorCode.SYS_ROLE_SAVE_ERROR_MESSAGE);
         }
 
@@ -113,8 +117,10 @@ public class RoleCtl {
             // 执行修改
             sysRoleService.updateRoleInfo(sysRole);
         } catch (RuntimeException e) {
+            LOGGER.error(e.getMessage());
             return Result.error(RoleErrorCode.SYS_ROLE_QUERY_APP_ERROR_CODE, RoleErrorCode.SYS_ROLE_QUERY_APP_ERROR_MESSAGE);
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             return Result.error(RoleErrorCode.SYS_ROLE_QUERY_ERROR_CODE, RoleErrorCode.SYS_ROLE_QUERY_ERROR_MESSAGE);
         }
 
@@ -134,8 +140,10 @@ public class RoleCtl {
             // 校验参数 todo
             sysRoleService.deleteByIds(ids);
         } catch (ApplicationException e) {
+            LOGGER.error(e.getMsg());
             return Result.error(RoleErrorCode.SYS_ROLE_DELETE_APP_ERROR_CODE, RoleErrorCode.SYS_ROLE_DELETE_APP_ERROR_MESSAGE);
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             return Result.error(RoleErrorCode.SYS_ROLE_DELETE_ERROR_CODE, RoleErrorCode.SYS_ROLE_DELETE_ERROR_MESSAGE);
         }
 

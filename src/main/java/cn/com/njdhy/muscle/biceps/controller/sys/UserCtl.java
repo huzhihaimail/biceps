@@ -33,6 +33,8 @@ import java.util.Map;
 @RequestMapping("/sys/user")
 public class UserCtl {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserCtl.class);
+
     @Autowired
     private SysUserService sysUserService;
 
@@ -95,9 +97,10 @@ public class UserCtl {
             // 执行入库操作
             sysUserService.saveUser(sysUser);
         } catch (ApplicationException e) {
+            LOGGER.error(e.getMsg());
             return Result.error(UserErrorCode.SYS_USER_SAVE_APP_ERROR_CODE, UserErrorCode.SYS_USER_SAVE_APP_ERROR_MESSAGE);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
             return Result.error(UserErrorCode.SYS_USER_SAVE_ERROR_CODE, UserErrorCode.SYS_USER_SAVE_ERROR_MESSAGE);
         }
 
@@ -121,8 +124,10 @@ public class UserCtl {
             sysUserService.updateUser(sysUser);
 
         } catch (RuntimeException e) {
+            LOGGER.error(e.getMessage());
             return Result.error(UserErrorCode.SYS_USER_UPDATE_APP_ERROR_CODE, UserErrorCode.SYS_USER_UPDATE_APP_ERROR_MESSAGE);
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             return Result.error(UserErrorCode.SYS_USER_UPDATE_ERROR_CODE, UserErrorCode.SYS_USER_UPDATE_ERROR_MESSAGE);
         }
 
@@ -141,8 +146,10 @@ public class UserCtl {
         try {
             sysUserService.deleteUser(ids);
         } catch (ApplicationException e) {
+            LOGGER.error(e.getMsg());
             return Result.error(e.getCode(), e.getMsg());
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             return Result.error(e.getMessage());
         }
 
@@ -176,8 +183,10 @@ public class UserCtl {
             List<SysRole> rolesLst = sysRoleService.loadRoles(query);
             return Result.success().put("page", rolesLst);
         } catch (RuntimeException e) {
+            LOGGER.error(e.getMessage());
             return Result.error(UserErrorCode.SYS_USER_LOAD_ROLES_APP_ERROR_CODE, UserErrorCode.SYS_USER_LOAD_ROLES_APP_ERROR_MESSAGE);
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             return Result.error(UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_CODE, UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_MESSAGE);
         }
     }
