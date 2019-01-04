@@ -4,6 +4,8 @@ package cn.com.njdhy.muscle.biceps.service.sys;
 import cn.com.njdhy.muscle.biceps.model.SysUser;
 import cn.com.njdhy.muscle.biceps.service.BaseService;
 
+import java.util.List;
+
 /**
  * <类功能简述> 用户管理业务处理接口
  *
@@ -33,5 +35,12 @@ public interface SysUserService extends BaseService<SysUser> {
      * @param sysUser
      */
     void updateUser(SysUser sysUser);
+
+    /**
+     * 删除用户
+     * @param ids
+     */
+    void deleteUser(List<String> ids);
+
 
 }

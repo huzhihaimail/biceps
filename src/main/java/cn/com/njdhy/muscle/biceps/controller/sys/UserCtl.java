@@ -33,11 +33,10 @@ import java.util.Map;
 @RequestMapping("/sys/user")
 public class UserCtl {
 
-    @Autowired
-    private SysUserService sysUserService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserCtl.class);
 
     @Autowired
-    private SysUserRoleService sysUserRoleService;
+    private SysUserService sysUserService;
 
     @Autowired
     private SysRoleService sysRoleService;
@@ -60,7 +59,6 @@ public class UserCtl {
 
     /**
      * 根据id查询用户信息
-     *
      * @param id 用户ID
      * @return 用户实体
      */
@@ -93,12 +91,16 @@ public class UserCtl {
 
         try {
             // 校验参数
+            if (ObjectUtils.isEmpty(sysUser)){
+                return Result.error("500", "用户信息不能为空");
+            }
             // 执行入库操作
             sysUserService.saveUser(sysUser);
         } catch (ApplicationException e) {
+            LOGGER.error(e.getMsg());
             return Result.error(UserErrorCode.SYS_USER_SAVE_APP_ERROR_CODE, UserErrorCode.SYS_USER_SAVE_APP_ERROR_MESSAGE);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
             return Result.error(UserErrorCode.SYS_USER_SAVE_ERROR_CODE, UserErrorCode.SYS_USER_SAVE_ERROR_MESSAGE);
         }
 
@@ -116,14 +118,21 @@ public class UserCtl {
 
         try {
             // 校验参数
-            // TODO: 2018/3/14
+            if (ObjectUtils.isEmpty(sysUser)){
+                return Result.error("500", "用户信息不能为空");
+            }
+            if (ObjectUtils.isEmpty(sysUser.getId())){
+                return Result.error("500", "用户id不能为空");
+            }
 
             // 执行修改
             sysUserService.updateUser(sysUser);
 
         } catch (RuntimeException e) {
+            LOGGER.error(e.getMessage());
             return Result.error(UserErrorCode.SYS_USER_UPDATE_APP_ERROR_CODE, UserErrorCode.SYS_USER_UPDATE_APP_ERROR_MESSAGE);
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             return Result.error(UserErrorCode.SYS_USER_UPDATE_ERROR_CODE, UserErrorCode.SYS_USER_UPDATE_ERROR_MESSAGE);
         }
 
@@ -140,10 +149,15 @@ public class UserCtl {
     public Result deleteByIds(@RequestBody List<String> ids) {
 
         try {
-            sysUserService.deleteByIds(ids);
+            if (ObjectUtils.isEmpty(ids)){
+                return Result.error("500", "id不能为空");
+            }
+            sysUserService.deleteUser(ids);
         } catch (ApplicationException e) {
+            LOGGER.error(e.getMsg());
             return Result.error(e.getCode(), e.getMsg());
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             return Result.error(e.getMessage());
         }
 
@@ -159,8 +173,6 @@ public class UserCtl {
     public Result loadRoles() {
 
         try {
-            // 校验参数
-
             // 获取登用户名
             String loginUserName = ShiroUtil.getLoginUserName();
 
@@ -177,8 +189,10 @@ public class UserCtl {
             List<SysRole> rolesLst = sysRoleService.loadRoles(query);
             return Result.success().put("page", rolesLst);
         } catch (RuntimeException e) {
+            LOGGER.error(e.getMessage());
             return Result.error(UserErrorCode.SYS_USER_LOAD_ROLES_APP_ERROR_CODE, UserErrorCode.SYS_USER_LOAD_ROLES_APP_ERROR_MESSAGE);
         } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             return Result.error(UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_CODE, UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_MESSAGE);
         }
     }

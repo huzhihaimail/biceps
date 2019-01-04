@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUser> imp
     @Autowired
     private SysUserRoleService sysUserRoleService;
 
-    @Autowired
+    @Resource
     private SysUserRoleDao sysUserRoleDao;
 
     /**
@@ -109,6 +110,21 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUser> imp
 
         // 用户配置角色信息入库
         sysUserRoleService.batchInsert(sysUserRolesLst);
+    }
+
+    /**
+     * 删除用户
+     * @param ids
+     */
+    @Transactional
+    @Override
+    public void deleteUser(List<String> ids) {
+        //删除用户
+        dao.deleteByIds(ids);
+        //删除用户角色关联信息
+        for (String id:ids){
+            sysUserRoleDao.deleteByUserId(id);
+        }
     }
 
 
