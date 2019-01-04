@@ -29,12 +29,23 @@ public class SysConfigServiceImpl extends BaseServiceImpl<SysConfigDao,SysConfig
     }
 
     @Override
-    public List<SysConfig> selectAllConfig() {
-        return sysConfigDao.selectAllConfig();
+    public void saveConfig(SysConfig sysConfig) {
+        if (sysConfig.getParentId() == null) {
+            sysConfig.setParentId(0);
+        }
+        sysConfigDao.saveConfig(sysConfig);
     }
 
     @Override
-    public void saveConfig(SysConfig sysConfig) {
-        sysConfigDao.saveConfig(sysConfig);
+    public void delete(String id) {
+        int count = sysConfigDao.delete(id);
+        if(count !=1){
+            throw new RuntimeException("删除失败！");
+        }
+    }
+
+    @Override
+    public List<Integer> queryByParentId(String id) {
+        return sysConfigDao.queryByParentId(id);
     }
 }

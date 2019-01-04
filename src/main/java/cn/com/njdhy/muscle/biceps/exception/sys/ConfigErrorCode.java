@@ -60,4 +60,7 @@ public interface ConfigErrorCode {
      */
     String SYS_CONFIG_DELETE_ERROR_CODE = SYS_CONFIG + "8";
     String SYS_CONFIG_DELETE_ERROR_MESSAGE = "删除参数出现根异常";
+
+    String SYS_CONFIG_PARAMS_ERROR_CODE = SYS_CONFIG + "9";
+    String SYS_CONFIG_PARAMS_ERROR_MESSAGE =  "参数不能为空";
 }

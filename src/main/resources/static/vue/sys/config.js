@@ -14,14 +14,10 @@ var showColumns = [
             return index + 1;
         }
     }
-    // , {
-    //     field: "configId",
-    //     title: "菜单id",
-    //     width: "10%",
-    // }
+
     , {
-        field: "parentId",
-        title: "父级ID",
+        field: "parentKey",
+        title: "父级字段名",
         width: "10%",
     }
     , {
@@ -63,7 +59,7 @@ var setting = {
     data: {
         simpleData: {
             enable: true,
-            idKey: "configId",
+            idKey: "id",
             pIdKey: "parentId",
             rootPId: -1
         }
@@ -95,10 +91,9 @@ var vm = new Vue({
             keyword: null,
         }
         //实体对象(用于新建、修改页面)
-        , model: {
-        }
+        , model: {}
         //所有的父级id
-        , parentIds:{}
+        , parentIds: {}
         // 定义模块名称
         , moduleName: "config"
     }
@@ -121,9 +116,7 @@ var vm = new Vue({
 
 
             // 3. 清空表单数据
-            vm.model = {
-
-            }
+            vm.model = {}
             //查询所有父级id
             vm.queryAllParentId();
 
@@ -132,6 +125,22 @@ var vm = new Vue({
         // 点击“确定”按钮
         , commit: function (el) {
 
+            if (vm.model.type != 0 && vm.model.type != 1 ) {
+                vm.errorMessage = "请选择参数类型！";
+                return;
+            }
+            if (vm.model.key.trim() == null || vm.model.key.trim() == "") {
+                vm.errorMessage = "请输入字段名称！";
+                return;
+            }
+            if (vm.model.value.trim() == null || vm.model.value.trim() == "") {
+                vm.errorMessage = "请输入字段值！";
+                return;
+            }
+            if (vm.model.status != 0 && vm.model.status != 1 ) {
+                vm.errorMessage = "请选择是否隐藏！";
+                return;
+            }
             // 执行新增操作
             if (vm.model.id == null) {
                 vm.doSave();
@@ -174,7 +183,7 @@ var vm = new Vue({
             vm.errorMessage = null;
 
             // 获取所选择选择数据行的ID（可能选择多行）
-            var ids = bsTable.getMultiRowConfigIds();
+            var ids = bsTable.getMultiRowIds();
 
             // 校验只能选择一行
             if (ids.length != 1) {
@@ -218,12 +227,14 @@ var vm = new Vue({
         // 点击“删除”按钮
         , del: function (event) {
             // 获取选择记录ID
-            var ids = bsTable.getMultiRowConfigIds();
-            // 校验只能选择一行
-            if (ids.length != 1) {
+            var ids = bsTable.getMultiRowIds();
+            console.log(ids);
+            // 校验未选择任何一行
+            if (ids == null || ids.length <= 0) {
                 alert(PAGE_SELECT_ONE);
                 return;
             }
+
             confirm(PAGE_ARE_YOU_SURE_DEL, function () {
                 $.ajax({
                     type: "POST",
@@ -262,7 +273,7 @@ var vm = new Vue({
             bsTable.createBootStrapTable(showColumns, APP_NAME + "/sys/" + vm.moduleName + "/list?rnd=" + Math.random(), vm.queryOption);
         }
         //查询所有父级id
-        ,queryAllParentId:function(){
+        , queryAllParentId: function () {
             $.ajax({
                 type: "GET",
                 url: APP_NAME + "/sys/" + vm.moduleName + "/queryAllParentId",
@@ -274,7 +285,6 @@ var vm = new Vue({
                 }
             });
         }
-
 
 
     }

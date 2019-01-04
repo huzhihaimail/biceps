@@ -15,11 +15,16 @@ public class SysConfig {
     /**
      * 主键id
      */
-    private Integer configId;
+    private Integer id;
     /**
      * 父级id
      */
     private Integer parentId;
+    /**
+     * 父级字段名
+     */
+    private String parentKey;
+
     /**
      * key
      */
@@ -28,6 +33,10 @@ public class SysConfig {
      * value
      */
     private String value;
+    /**
+     * 类型：0一级菜单 1二级菜单
+     */
+    private Integer type;
     /**
      * 状态：0隐藏 1显示
      */

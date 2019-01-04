@@ -51,6 +51,23 @@ public interface SysMenuDao extends BaseDao<SysMenu> {
      */
     List<String> queryPermissionByUserName(String loginName);
 
+    /**
+     * 通过用户id查询树列表
+     * @param id
+     * @return
+     */
     List<SysMenu> queryZtreeListByUserId(Integer id);
 
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    int delete(Integer id);
+    /**
+     * 更加parentId查询
+     * @param id
+     * @return
+     */
+    List<Integer> queryByParentId(Integer id);
 }

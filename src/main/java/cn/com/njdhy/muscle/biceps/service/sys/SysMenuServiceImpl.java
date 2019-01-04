@@ -72,4 +72,17 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenu> imp
     public List<SysMenu> queryZtreeListByUserId(Integer id) {
         return this.dao.queryZtreeListByUserId(id);
     }
+
+    @Override
+    public void delete(Integer id) {
+        int count = dao.delete(id);
+        if(count !=1){
+            throw new RuntimeException("菜单删除失败！");
+        }
+    }
+
+    @Override
+    public List<Integer> queryByParentId(Integer id) {
+        return dao.queryByParentId(id);
+    }
 }

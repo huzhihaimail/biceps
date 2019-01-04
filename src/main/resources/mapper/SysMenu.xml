@@ -85,10 +85,17 @@
             #{id}
         </foreach>
     </delete>
-    <delete id="delete">
-
+    <delete id="delete" parameterType="int">
+        DELETE FROM
+        <include refid="tableName"/>
+        WHERE id=#{id}
     </delete>
-
+    <select id="queryByParentId" resultType="int">
+        SELECT id
+        FROM
+        <include refid="tableName"/>
+        WHERE parent_id=#{id}
+    </select>
     <!-- 新建  -->
     <insert id="insert" parameterType="SysMenu" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sys_menu

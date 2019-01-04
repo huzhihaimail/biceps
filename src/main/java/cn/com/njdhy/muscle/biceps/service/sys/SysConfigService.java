@@ -20,15 +20,22 @@ public interface SysConfigService extends BaseService<SysConfig> {
     List<SysConfig> selectByParentId();
 
     /**
-     * 查询所有的参数
-     * @return
-     */
-    List<SysConfig> selectAllConfig();
-
-    /**
      * 保存
      * @param sysConfig
      * @return
      */
     void saveConfig(SysConfig sysConfig);
+
+    /**
+     * 删除
+     * @param id
+     */
+    void delete(String id);
+
+    /**
+     * 根据父级id查询id集合
+     * @param id
+     * @return
+     */
+    List<Integer> queryByParentId(String id);
 }

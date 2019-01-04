@@ -15,8 +15,8 @@ var showColumns = [
         }
     }
     , {
-        field: "parentId",
-        title: "父级菜单",
+        field: "parentName",
+        title: "父级菜单名",
         width: "10%",
         sortable: true,
         sortName: "parent_id" // sortName的值，需配置和数据库保持一致
@@ -42,13 +42,13 @@ var showColumns = [
         sortable: true,
         formatter: function (value, row, index) { // 设置列序号值，index从0开始
             if (value == 0) {
-                return "目录";
+                return "<span class='label label-primary'>目录</span>";
             }
             if (value == 1) {
-                return "菜单";
+                return "<span class='label label-success'>菜单</span>";
             }
             if (value == 2) {
-                return "按钮";
+                return "<span class='label label-warning'>按钮</span>";
             }
         }
     }
@@ -164,12 +164,6 @@ var vm = new Vue({
                 vm.errorMessage = "请输入菜单名称！";
                 return;
             }
-
-            //  校验表单父级菜单
-            // if (vm.model.parentId.trim() == null ) {
-            //     vm.errorMessage = "请选择父级菜单！";
-            //     return;
-            // }
 
             // 执行新增操作
             if (vm.model.id == null) {

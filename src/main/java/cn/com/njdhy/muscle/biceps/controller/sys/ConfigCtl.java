@@ -10,6 +10,7 @@ import cn.com.njdhy.muscle.biceps.service.sys.SysConfigService;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @description
- *
- *
  * @author rain
+ * @description
  * @date 2018/12/29 11:10
  */
 @RestController
@@ -34,16 +33,27 @@ public class ConfigCtl {
     @RequestMapping("/list")
     public Result index(@RequestParam Map<String, Object> params, Integer pageNumber, Integer pageSize) {
         Query queryParam = new Query(params);
-        PageInfo<SysConfig> result=null;
+        PageInfo<SysConfig> result = null;
         try {
             result = sysConfigService.queryList(queryParam, pageNumber, pageSize);
+            List<SysConfig> sysConfigs = result.getList();
+            for (SysConfig sysConfig : sysConfigs) {
+
+                if (sysConfig.getParentId() == 0) {
+                    sysConfig.setParentKey("一级菜单");
+                } else {
+                    SysConfig s = sysConfigService.queryById(String.valueOf(sysConfig.getParentId()));
+                    sysConfig.setParentKey(s.getKey());
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.error(ConfigErrorCode.SYS_CONFIG_QUERY_ERROR_CODE,ConfigErrorCode.SYS_CONFIG_QUERY_ERROR_MESSAGE);
+            return Result.error(ConfigErrorCode.SYS_CONFIG_QUERY_ERROR_CODE, ConfigErrorCode.SYS_CONFIG_QUERY_ERROR_MESSAGE);
         }
 
         return Result.success(result.getTotal(), result.getList());
     }
+
     /**
      * 修改操作
      *
@@ -54,6 +64,10 @@ public class ConfigCtl {
     public Result update(@RequestBody SysConfig sysConfig) {
 
         try {
+            // 校验参数
+            if (ObjectUtils.isEmpty(sysConfig)) {
+                return Result.error(ConfigErrorCode.SYS_CONFIG_PARAMS_ERROR_CODE,ConfigErrorCode.SYS_CONFIG_PARAMS_ERROR_MESSAGE);
+            }
             // 执行修改
             sysConfigService.update(sysConfig);
         } catch (RuntimeException e) {
@@ -64,6 +78,7 @@ public class ConfigCtl {
 
         return Result.success();
     }
+
     /**
      * 根据id查询用户信息
      *
@@ -72,16 +87,19 @@ public class ConfigCtl {
      */
     @RequestMapping("/{id}")
     public Result queryById(@PathVariable String id) {
-        SysConfig model=null;
+        // 校验参数
+        if (ObjectUtils.isEmpty(id)) {
+            return Result.error(ConfigErrorCode.SYS_CONFIG_PARAMS_ERROR_CODE,ConfigErrorCode.SYS_CONFIG_PARAMS_ERROR_MESSAGE);
+        }
+        SysConfig model = null;
         try {
-            model= sysConfigService.queryById(id);
-
+            model = sysConfigService.queryById(id);
             if (ObjectUtils.isEmpty(model)) {
                 model = new SysConfig();
             }
+
         } catch (Exception e) {
-            e.printStackTrace();
-            return Result.error(ConfigErrorCode.SYS_CONFIG_QUERY_ERROR_CODE,ConfigErrorCode.SYS_CONFIG_QUERY_ERROR_MESSAGE);
+            return Result.error(ConfigErrorCode.SYS_CONFIG_QUERY_ERROR_CODE, ConfigErrorCode.SYS_CONFIG_QUERY_ERROR_MESSAGE);
         }
 
         return Result.success().put("model", model);
@@ -98,12 +116,13 @@ public class ConfigCtl {
 
         try {
             // 校验参数
+            if (ObjectUtils.isEmpty(sysConfig)) {
+                return Result.error(ConfigErrorCode.SYS_CONFIG_PARAMS_ERROR_CODE,ConfigErrorCode.SYS_CONFIG_PARAMS_ERROR_MESSAGE);
+            }
             sysConfigService.saveConfig(sysConfig);
         } catch (ApplicationException e) {
-            e.printStackTrace();
             return Result.error(ConfigErrorCode.SYS_CONFIG_SAVE_APP_ERROR_CODE, ConfigErrorCode.SYS_CONFIG_SAVE_APP_ERROR_MESSAGE);
         } catch (Exception e) {
-            e.printStackTrace();
             return Result.error(ConfigErrorCode.SYS_CONFIG_SAVE_ERROR_CODE, ConfigErrorCode.SYS_CONFIG_SAVE_ERROR_MESSAGE);
         }
 
@@ -117,11 +136,27 @@ public class ConfigCtl {
      * @return 结果对象
      */
     @RequestMapping("/delete")
+    @Transactional(rollbackFor = Exception.class)
     public Result deleteByIds(@RequestBody List<String> ids) {
 
         try {
-
+            // 校验参数
+            if (ObjectUtils.isEmpty(ids)) {
+                return Result.error(ConfigErrorCode.SYS_CONFIG_DELETE_ERROR_CODE,ConfigErrorCode.SYS_CONFIG_DELETE_ERROR_MESSAGE);
+            }
             sysConfigService.deleteByIds(ids);
+            for (String id : ids) {
+                SysConfig s = sysConfigService.queryById(id);
+                if (s.getParentId() != 0) {
+                    sysConfigService.delete(id);
+                }else if(s.getParentId()==0){
+                    List<Integer> sc = sysConfigService.queryByParentId(id);
+                    for(Integer i:sc){
+                        sysConfigService.delete(String.valueOf(i));
+                    }
+                    sysConfigService.delete(id);
+                }
+            }
         } catch (ApplicationException e) {
             e.printStackTrace();
             return Result.error(e.getCode(), e.getMsg());
@@ -135,17 +170,18 @@ public class ConfigCtl {
 
     /**
      * 查询所有父级id
+     *
      * @return
      */
     @RequestMapping("/queryAllParentId")
     public Result selectAllParentId() {
-        List<SysConfig> list=null;
+        List<SysConfig> list = null;
         try {
-            list= sysConfigService.selectByParentId();
+            list = sysConfigService.selectByParentId();
         } catch (Exception e) {
-            e.printStackTrace();
+            return Result.error(ConfigErrorCode.SYS_CONFIG_QUERY_ERROR_CODE, ConfigErrorCode.SYS_CONFIG_QUERY_ERROR_MESSAGE);
         }
-        return Result.success().put("parentIds",list);
+        return Result.success().put("parentIds", list);
     }
 
 }

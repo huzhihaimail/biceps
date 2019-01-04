@@ -11,12 +11,6 @@ import java.util.List;
  */
 public interface SysConfigDao extends BaseDao<SysConfig> {
 
-    /**
-     * 根据configId 查询是否有父级ID
-     * @param configId
-     * @return
-     */
-    SysConfig selectById(Integer configId);
 
     /**
      * 查询所有父级ID
@@ -26,21 +20,23 @@ public interface SysConfigDao extends BaseDao<SysConfig> {
 
 
     /**
-     * 根据configId作逻辑删除
-     * @param configId
-     */
-    void updateById(Integer configId);
-
-    /**selectByParentId
-     * 查询所有的参数
-     * @return
-     */
-    List<SysConfig> selectAllConfig();
-
-    /**
      * 保存
      * @param sysConfig
      * @return
      */
     int saveConfig(SysConfig sysConfig);
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    int delete(String id);
+
+    /**
+     * 根据父级id查询id集合
+     * @param id
+     * @return
+     */
+    List<Integer> queryByParentId(String id);
 }
