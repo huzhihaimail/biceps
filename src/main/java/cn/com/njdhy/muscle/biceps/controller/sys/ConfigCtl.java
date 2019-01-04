@@ -144,7 +144,6 @@ public class ConfigCtl {
             if (ObjectUtils.isEmpty(ids)) {
                 return Result.error(ConfigErrorCode.SYS_CONFIG_DELETE_ERROR_CODE,ConfigErrorCode.SYS_CONFIG_DELETE_ERROR_MESSAGE);
             }
-            sysConfigService.deleteByIds(ids);
             for (String id : ids) {
                 SysConfig s = sysConfigService.queryById(id);
                 if (s.getParentId() != 0) {

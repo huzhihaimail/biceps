@@ -91,10 +91,11 @@
             #{id}
         </foreach>
     </delete>
+
     <delete id="delete" parameterType="String">
         DELETE FROM
         <include refid="tableName"/>
-        WHERE id ={id}
+        WHERE id =#{id}
     </delete>
 
     <!-- 新建  -->
