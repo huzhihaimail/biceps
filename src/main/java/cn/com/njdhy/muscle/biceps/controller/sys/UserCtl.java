@@ -60,7 +60,6 @@ public class UserCtl {
 
     /**
      * 根据id查询用户信息
-     *
      * @param id 用户ID
      * @return 用户实体
      */
