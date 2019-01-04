@@ -39,9 +39,6 @@ public class UserCtl {
     private SysUserService sysUserService;
 
     @Autowired
-    private SysUserRoleService sysUserRoleService;
-
-    @Autowired
     private SysRoleService sysRoleService;
 
     /**
@@ -94,6 +91,9 @@ public class UserCtl {
 
         try {
             // 校验参数
+            if (ObjectUtils.isEmpty(sysUser)){
+                return Result.error("500", "用户信息不能为空");
+            }
             // 执行入库操作
             sysUserService.saveUser(sysUser);
         } catch (ApplicationException e) {
@@ -118,7 +118,12 @@ public class UserCtl {
 
         try {
             // 校验参数
-            // TODO: 2018/3/14
+            if (ObjectUtils.isEmpty(sysUser)){
+                return Result.error("500", "用户信息不能为空");
+            }
+            if (ObjectUtils.isEmpty(sysUser.getId())){
+                return Result.error("500", "用户id不能为空");
+            }
 
             // 执行修改
             sysUserService.updateUser(sysUser);
@@ -144,6 +149,9 @@ public class UserCtl {
     public Result deleteByIds(@RequestBody List<String> ids) {
 
         try {
+            if (ObjectUtils.isEmpty(ids)){
+                return Result.error("500", "id不能为空");
+            }
             sysUserService.deleteUser(ids);
         } catch (ApplicationException e) {
             LOGGER.error(e.getMsg());
@@ -165,8 +173,6 @@ public class UserCtl {
     public Result loadRoles() {
 
         try {
-            // 校验参数
-
             // 获取登用户名
             String loginUserName = ShiroUtil.getLoginUserName();
 
