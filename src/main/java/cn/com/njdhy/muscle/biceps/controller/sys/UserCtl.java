@@ -139,7 +139,7 @@ public class UserCtl {
     public Result deleteByIds(@RequestBody List<String> ids) {
 
         try {
-            sysUserService.deleteByIds(ids);
+            sysUserService.deleteUser(ids);
         } catch (ApplicationException e) {
             return Result.error(e.getCode(), e.getMsg());
         } catch (Exception e) {
