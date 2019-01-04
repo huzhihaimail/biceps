@@ -115,11 +115,8 @@ public class UserCtl {
             // TODO: 2018/3/14
 
             // 执行修改
-            sysUserService.update(sysUser);
-            SysUserRole sysUserRole = new SysUserRole();
-            sysUserRole.setRoleId(sysUser.getRoleId());
-            sysUserRole.setUserId(sysUser.getId());
-            sysUserRoleService.update(sysUserRole);
+            sysUserService.updateUser(sysUser);
+
         } catch (RuntimeException e) {
             return Result.error(UserErrorCode.SYS_USER_UPDATE_APP_ERROR_CODE, UserErrorCode.SYS_USER_UPDATE_APP_ERROR_MESSAGE);
         } catch (Exception e) {

@@ -2,6 +2,7 @@
 package cn.com.njdhy.muscle.biceps.service.sys;
 
 import cn.com.njdhy.muscle.biceps.dao.SysUserDao;
+import cn.com.njdhy.muscle.biceps.dao.SysUserRoleDao;
 import cn.com.njdhy.muscle.biceps.model.SysUser;
 import cn.com.njdhy.muscle.biceps.model.SysUserRole;
 import cn.com.njdhy.muscle.biceps.service.BaseServiceImpl;
@@ -24,6 +25,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUser> imp
 
     @Autowired
     private SysUserRoleService sysUserRoleService;
+
+    @Autowired
+    private SysUserRoleDao sysUserRoleDao;
 
     /**
      * 插入用户
@@ -79,6 +83,32 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserDao, SysUser> imp
         user.setUserRoles(list);
 
         return user;
+    }
+
+    /**
+     * 修改用户
+     * @param sysUser
+     */
+    @Override
+    public void updateUser(SysUser sysUser) {
+        //修改用户
+        dao.update(sysUser);
+        //删除用户角色关联表
+        sysUserRoleDao.deleteByUserId(String.valueOf(sysUser.getId()));
+        //重新增加用户角色关联表
+        List<SysUserRole> sysUserRolesLst = new ArrayList<>();
+        // 获取角色信息
+        List<String> roles = sysUser.getUserRoles();
+
+        for (String roleId : roles) {
+            SysUserRole sysUserRole = new SysUserRole();
+            sysUserRole.setUserId(sysUser.getId());
+            sysUserRole.setRoleId(roleId);
+            sysUserRolesLst.add(sysUserRole);
+        }
+
+        // 用户配置角色信息入库
+        sysUserRoleService.batchInsert(sysUserRolesLst);
     }
 
 

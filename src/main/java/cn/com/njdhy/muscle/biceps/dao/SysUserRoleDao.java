@@ -20,4 +20,10 @@ public interface SysUserRoleDao extends BaseDao<SysUserRole> {
      * @return
      */
     List<SysUserRole> queryUserRoleList(String userId);
+
+    /**
+     * 删除用户角色关联表信息通过用户id
+     * @param userId
+     */
+    void deleteByUserId(String userId);
 }

@@ -129,12 +129,12 @@ var vm = new Vue({
 
             // 判断用户
             if (!vm.model.userName || vm.model.userName.trim() == "") {
-                vm.errorMessage = "请输入用户名。";
+                vm.errorMessage = "请输入用户名称";
                 return;
             }
 
             if (vm.model.userName.trim().length <= 0 || vm.model.userName.trim().length > 10) {
-                vm.errorMessage = "用户名长度不能超过10个字符。";
+                vm.errorMessage = "用户名称长度不能超过10个字符。";
                 return;
             }
 
@@ -144,8 +144,8 @@ var vm = new Vue({
                 return;
             }
 
-            if (vm.model.nickName.trim().length <= 0 || vm.model.nickName.trim().length > 10) {
-                vm.errorMessage = "长度不能超过10个字符。";
+            if (vm.model.nickName.trim().length <= 0 || vm.model.nickName.trim().length > 20) {
+                vm.errorMessage = "长度不能超过20个字符。";
                 return;
             }
 
@@ -157,30 +157,14 @@ var vm = new Vue({
 
             // 新增判断密码
             if (vm.model.id == null) {
-                if (vm.model.password.trim().length < 6 || vm.model.password.trim().length > 32) {
-                    alert(vm.model.password);
-                    vm.errorMessage = "密码长度不能小于6位大于32位";
+                if (vm.model.password.trim().length < 6 || vm.model.password.trim().length > 16) {
+                    vm.errorMessage = "密码长度不能小于6位大于16位";
                     return;
                 }
 
                 //确认密码
                 if (vm.model.newPassword.trim() != vm.model.password.trim()) {
                     vm.errorMessage = "两次密码必须保持一致";
-                    return;
-                }
-            }
-
-            //电子邮箱
-            if (!vm.model.email || vm.model.email.trim() == "") {
-                vm.errorMessage = "请输入邮箱";
-                return;
-            } else {
-                // 定义校验规则
-                var regEmail = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/;
-                var flag = regEmail.test(vm.model.email.trim());
-                // 规则校验：不符合规则则给出提示
-                if (!flag) {
-                    vm.errorMessage = "请输入正确的邮箱";
                     return;
                 }
             }
