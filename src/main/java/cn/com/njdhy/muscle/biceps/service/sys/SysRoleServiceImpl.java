@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.Map;
 @Service
 public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRole> implements SysRoleService {
 
-    @Autowired
+    @Resource
     protected SysRoleMenuDao roleMenuDao;
 
     @Override
@@ -105,6 +106,20 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRole> imp
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 删除角色
+     * @param ids
+     */
+    @Override
+    public void deleteRoleInfo(List<String> ids) {
+        //删除角色
+        dao.deleteByIds(ids);
+        //删除角色菜单关联表
+        for (String id:ids){
+            roleMenuDao.deleteById(id);
         }
     }
 }

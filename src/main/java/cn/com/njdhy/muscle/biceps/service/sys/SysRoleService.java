@@ -46,4 +46,10 @@ public interface SysRoleService extends BaseService<SysRole> {
      */
     void updateRoleInfo(SysRole role);
 
+    /**
+     * 删除角色信息
+     * @param ids
+     */
+    void deleteRoleInfo(List<String> ids);
+
 }

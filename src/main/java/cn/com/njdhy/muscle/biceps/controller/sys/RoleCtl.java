@@ -153,7 +153,7 @@ public class RoleCtl {
             if (ObjectUtils.isEmpty(ids)){
                 return Result.error("500", "角色id不能为空");
             }
-            sysRoleService.deleteByIds(ids);
+            sysRoleService.deleteRoleInfo(ids);
         } catch (ApplicationException e) {
             LOGGER.error(e.getMsg());
             return Result.error(RoleErrorCode.SYS_ROLE_DELETE_APP_ERROR_CODE, RoleErrorCode.SYS_ROLE_DELETE_APP_ERROR_MESSAGE);
