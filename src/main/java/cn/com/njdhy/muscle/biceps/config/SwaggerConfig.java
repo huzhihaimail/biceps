@@ -29,6 +29,8 @@ public class SwaggerConfig {
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
+                // 开启swagger
+                .enable(swaggerProperties.isOpenSwagger())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(swaggerProperties.getApi()))
                 .paths(PathSelectors.any())

@@ -18,6 +18,11 @@ import org.springframework.stereotype.Component;
 public class SwaggerProperties {
 
     /**
+     * 是否开放Swagger
+     */
+    private boolean openSwagger;
+
+    /**
      * swagger读取接口的所在包名
      */
     private String api;

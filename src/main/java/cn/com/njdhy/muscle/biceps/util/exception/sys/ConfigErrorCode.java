@@ -1,4 +1,4 @@
-package cn.com.njdhy.muscle.biceps.exception.sys;
+package cn.com.njdhy.muscle.biceps.util.exception.sys;
 
 /**
  * @author rain

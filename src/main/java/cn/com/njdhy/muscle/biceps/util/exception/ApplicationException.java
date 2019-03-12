@@ -1,4 +1,4 @@
-package cn.com.njdhy.muscle.biceps.exception;
+package cn.com.njdhy.muscle.biceps.util.exception;
 
 /**
  * <一句话功能简述> 应用异常

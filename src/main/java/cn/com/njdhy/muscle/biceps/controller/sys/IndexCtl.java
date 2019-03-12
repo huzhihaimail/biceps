@@ -2,7 +2,7 @@
 package cn.com.njdhy.muscle.biceps.controller.sys;
 
 import cn.com.njdhy.muscle.biceps.controller.Result;
-import cn.com.njdhy.muscle.biceps.exception.sys.IndexErrorCode;
+import cn.com.njdhy.muscle.biceps.util.exception.sys.IndexErrorCode;
 import cn.com.njdhy.muscle.biceps.model.SysMenu;
 import cn.com.njdhy.muscle.biceps.service.sys.SysMenuService;
 import cn.com.njdhy.muscle.biceps.util.ShiroUtil;

@@ -3,14 +3,18 @@ package cn.com.njdhy.muscle.biceps.controller.sys;
 
 import cn.com.njdhy.muscle.biceps.controller.Query;
 import cn.com.njdhy.muscle.biceps.controller.Result;
-import cn.com.njdhy.muscle.biceps.exception.ApplicationException;
-import cn.com.njdhy.muscle.biceps.exception.sys.UserErrorCode;
+import cn.com.njdhy.muscle.biceps.util.exception.ApplicationException;
+import cn.com.njdhy.muscle.biceps.util.exception.sys.UserErrorCode;
 import cn.com.njdhy.muscle.biceps.model.SysRole;
 import cn.com.njdhy.muscle.biceps.model.SysUser;
 import cn.com.njdhy.muscle.biceps.service.sys.SysRoleService;
 import cn.com.njdhy.muscle.biceps.service.sys.SysUserService;
 import cn.com.njdhy.muscle.biceps.util.ShiroUtil;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +33,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/sys/user")
+@Api(tags = "用户管理控制器")
 public class UserCtl {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCtl.class);
@@ -48,13 +53,19 @@ public class UserCtl {
      * @return 用户列表
      */
     @RequestMapping("/list")
+    @ApiOperation(value = "查询用户列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "params", value = "查询参数", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "pageNumber", value = "当前页码", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "每页大小", required = true, paramType = "query")
+    })
     public Result index(@RequestParam Map<String, Object> params, Integer pageNumber, Integer pageSize) {
         Query queryParam = new Query(params);
-        PageInfo<SysUser> result=null;
+        PageInfo<SysUser> result = null;
         try {
             result = sysUserService.queryList(queryParam, pageNumber, pageSize);
         } catch (Exception e) {
-            return Result.error(UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_CODE,UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_MESSAGE);
+            return Result.error(UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_CODE, UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_MESSAGE);
         }
 
         return Result.success(result.getTotal(), result.getList());
@@ -62,15 +73,16 @@ public class UserCtl {
 
     /**
      * 根据id查询用户信息
+     *
      * @param id 用户ID
      * @return 用户实体
      */
     @RequestMapping("/{id}")
     public Result queryById(@PathVariable String id) {
-        SysUser model =null;
+        SysUser model = null;
         try {
             //校验参数
-            if (ObjectUtils.isEmpty(id)){
+            if (ObjectUtils.isEmpty(id)) {
                 return Result.error(UserErrorCode.SYS_USER_PARMETER_ERROR_CODE, UserErrorCode.SYS_USER_PARMETER_ERROR_MESSAGE);
             }
             //查询信息
@@ -82,7 +94,7 @@ public class UserCtl {
                 model = new SysUser();
             }
         } catch (Exception e) {
-            return Result.error(UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_CODE,UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_MESSAGE);
+            return Result.error(UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_CODE, UserErrorCode.SYS_USER_LOAD_ROLES_ERROR_MESSAGE);
         }
 
         return Result.success().put("model", model);
@@ -100,7 +112,7 @@ public class UserCtl {
 
         try {
             // 校验参数
-            if (ObjectUtils.isEmpty(sysUser)){
+            if (ObjectUtils.isEmpty(sysUser)) {
                 return Result.error("500", "用户信息不能为空");
             }
             // 执行入库操作
@@ -127,10 +139,10 @@ public class UserCtl {
 
         try {
             // 校验参数
-            if (ObjectUtils.isEmpty(sysUser)){
+            if (ObjectUtils.isEmpty(sysUser)) {
                 return Result.error("500", "用户信息不能为空");
             }
-            if (ObjectUtils.isEmpty(sysUser.getId())){
+            if (ObjectUtils.isEmpty(sysUser.getId())) {
                 return Result.error("500", "用户id不能为空");
             }
 
@@ -158,7 +170,7 @@ public class UserCtl {
     public Result deleteByIds(@RequestBody List<String> ids) {
 
         try {
-            if (ObjectUtils.isEmpty(ids)){
+            if (ObjectUtils.isEmpty(ids)) {
                 return Result.error("500", "id不能为空");
             }
             sysUserService.deleteUser(ids);

@@ -1,19 +1,17 @@
 
 package cn.com.njdhy.muscle.biceps.handler;
 
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * <类功能简述> 统一异常处理
- * <功能详细描述>
+ * <类功能简述> 统一异常处理拦截器（返回JSON）
  *
- * @author 胡志海
- * @version V0.0.1-SNAPSHOT
+ * @author jason.hu
  */
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
 

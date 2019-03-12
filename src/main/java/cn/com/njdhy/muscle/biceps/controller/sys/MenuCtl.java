@@ -3,9 +3,9 @@ package cn.com.njdhy.muscle.biceps.controller.sys;
 
 import cn.com.njdhy.muscle.biceps.controller.Query;
 import cn.com.njdhy.muscle.biceps.controller.Result;
-import cn.com.njdhy.muscle.biceps.exception.ApplicationException;
-import cn.com.njdhy.muscle.biceps.exception.sys.MenuErrorCode;
-import cn.com.njdhy.muscle.biceps.exception.sys.RoleErrorCode;
+import cn.com.njdhy.muscle.biceps.util.exception.ApplicationException;
+import cn.com.njdhy.muscle.biceps.util.exception.sys.MenuErrorCode;
+import cn.com.njdhy.muscle.biceps.util.exception.sys.RoleErrorCode;
 import cn.com.njdhy.muscle.biceps.model.SysMenu;
 import cn.com.njdhy.muscle.biceps.model.SysRole;
 import cn.com.njdhy.muscle.biceps.model.ZTree;

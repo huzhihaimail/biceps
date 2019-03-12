@@ -2,7 +2,7 @@
 package cn.com.njdhy.muscle.biceps.service.sys;
 
 import cn.com.njdhy.muscle.biceps.dao.SysQuartzJobDao;
-import cn.com.njdhy.muscle.biceps.exception.ApplicationException;
+import cn.com.njdhy.muscle.biceps.util.exception.ApplicationException;
 import cn.com.njdhy.muscle.biceps.model.SysQuartzJob;
 import cn.com.njdhy.muscle.biceps.service.BaseServiceImpl;
 import cn.com.njdhy.muscle.biceps.util.quartz.QuartzJobFactory;

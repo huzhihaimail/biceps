@@ -1,5 +1,5 @@
 
-package cn.com.njdhy.muscle.biceps.exception.sys;
+package cn.com.njdhy.muscle.biceps.util.exception.sys;
 
 /**
  * <类功能简述> 异常码常量类
