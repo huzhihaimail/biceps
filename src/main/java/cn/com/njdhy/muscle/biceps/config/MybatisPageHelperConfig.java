@@ -17,6 +17,7 @@ public class MybatisPageHelperConfig {
     public PageHelper pageHelper() {
         PageHelper pageHelper = new PageHelper();
         Properties p = new Properties();
+
         p.setProperty("offsetAsPageNum", "true");
         p.setProperty("rowBoundsWithCount", "true");
         p.setProperty("pageSizeZero", "true");
